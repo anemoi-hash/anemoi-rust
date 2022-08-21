@@ -1,0 +1,84 @@
+[package]
+name = "anemoi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ark-ff = { version="^0.3.0", default-features = false }
+ark-bls12-377 = { version="^0.3.0", default-features = false, optional = true }
+ark-bls12-381 = { version="^0.3.0", default-features = false, optional = true }
+ark-bn254 = { version="^0.3.0", default-features = false, optional = true }
+ark-ec = { version="^0.3.0", default-features = false }
+ark-std = { version="^0.3.0", default-features = false }
+getrandom = { version = "0.2", default-features = false, features = ["js"] }
+rand_core = { version = "0.6.2", default-features = false, features = ["getrandom"] }
+unroll = { version = "0.1.5" }
+
+[dev-dependencies]
+ark-serialize = { version="^0.3.0" }
+ark-algebra-test-templates = { version="^0.3.0" }
+criterion = "0.3"
+
+[features]
+default = [
+    "std",
+    "bls_377",
+    "bls_381",
+    "bn_254",
+    "jubjub",
+    "128_bits",
+    "256_bits"
+]
+std = [
+    "ark-std/std",
+    "ark-ff/std",
+    "ark-ec/std",
+    "rand_core/std"
+]
+bls_377 = ["ark-bls12-377/curve"]
+bls_381 = ["ark-bls12-381/curve"]
+bn_254 = ["ark-bn254/curve"]
+128_bits = []
+256_bits = []
+jubjub = ["ark-bls12-381/scalar_field"]
+
+
+[[bench]]
+name = "anemoi-bls-377-128"
+harness = false
+required-features = ["bls_377"]
+
+[[bench]]
+name = "anemoi-bls-377-256"
+harness = false
+required-features = ["bls_377"]
+
+[[bench]]
+name = "anemoi-bls-381-128"
+harness = false
+required-features = ["bls_381"]
+
+[[bench]]
+name = "anemoi-bls-381-256"
+harness = false
+required-features = ["bls_381"]
+
+[[bench]]
+name = "anemoi-bn-254-128"
+harness = false
+required-features = ["bn_254"]
+
+[[bench]]
+name = "anemoi-bn-254-256"
+harness = false
+required-features = ["bn_254"]
+
+[[bench]]
+name = "anemoi-jubjub-128"
+harness = false
+required-features = ["jubjub"]
+
+[[bench]]
+name = "anemoi-jubjub-256"
+harness = false
+required-features = ["jubjub"]
