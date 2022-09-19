@@ -22,19 +22,19 @@ pub use traits::*;
 /// An implementation of some instantiations of the Anemoi permutation
 /// in Sponge and Jive modes over BLS12-377 base field.
 #[cfg(feature = "bls_377")]
-pub mod anemoi_bls_377;
+pub mod bls12_377;
 
 /// An implementation of some instantiations of the Anemoi permutation
 /// in Sponge and Jive modes over BLS12-381 base field.
 #[cfg(feature = "bls_381")]
-pub mod anemoi_bls_381;
+pub mod bls12_381;
 
 /// An implementation of some instantiations of the Anemoi permutation
 /// in Sponge and Jive modes over BN-254 base field.
 #[cfg(feature = "bn_254")]
-pub mod anemoi_bn_254;
+pub mod bn_254;
 
 /// An implementation of some instantiations of the Anemoi permutation
 /// in Sponge and Jive modes over Jubjub base field.
 #[cfg(feature = "jubjub")]
-pub mod anemoi_jubjub;
+pub mod jubjub;

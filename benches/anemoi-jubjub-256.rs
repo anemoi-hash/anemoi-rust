@@ -1,7 +1,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 extern crate anemoi;
-use anemoi::anemoi_jubjub::*;
+use anemoi::jubjub::*;
 use anemoi::{Jive, Sponge};
 use rand_core::OsRng;
 use rand_core::RngCore;

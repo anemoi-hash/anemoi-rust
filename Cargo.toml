@@ -44,32 +44,32 @@ jubjub = ["ark-bls12-381/scalar_field"]
 
 
 [[bench]]
-name = "anemoi-bls-377-128"
+name = "anemoi-bls12_377-128"
 harness = false
 required-features = ["bls_377"]
 
 [[bench]]
-name = "anemoi-bls-377-256"
+name = "anemoi-bls12_377-256"
 harness = false
 required-features = ["bls_377"]
 
 [[bench]]
-name = "anemoi-bls-381-128"
+name = "anemoi-bls12_381-128"
 harness = false
 required-features = ["bls_381"]
 
 [[bench]]
-name = "anemoi-bls-381-256"
+name = "anemoi-bls12_381-256"
 harness = false
 required-features = ["bls_381"]
 
 [[bench]]
-name = "anemoi-bn-254-128"
+name = "anemoi-bn_254-128"
 harness = false
 required-features = ["bn_254"]
 
 [[bench]]
-name = "anemoi-bn-254-256"
+name = "anemoi-bn_254-256"
 harness = false
 required-features = ["bn_254"]
 
