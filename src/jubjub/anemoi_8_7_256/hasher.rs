@@ -102,7 +102,7 @@ impl Sponge<Felt> for AnemoiHash {
         // Squeezing phase
 
         // Finally, return the first DIGEST_SIZE elements of the state.
-        AnemoiDigest::new(state[..DIGEST_SIZE].try_into().unwrap())
+        Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
     }
 
     fn hash_field(elems: &[Felt]) -> Self::Digest {
@@ -140,7 +140,22 @@ impl Sponge<Felt> for AnemoiHash {
 
         // Squeezing phase
 
-        AnemoiDigest::new(state[..DIGEST_SIZE].try_into().unwrap())
+        Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
+    }
+
+    fn merge(digests: &[Self::Digest; 2]) -> Self::Digest {
+        // initialize state to all zeros
+        let mut state = [Felt::zero(); STATE_WIDTH];
+
+        // 2*DIGEST_SIZE < RATE_SIZE so we can safely store
+        // the digests into the rate registers at once
+        state[0..DIGEST_SIZE].copy_from_slice(digests[0].as_elements());
+        state[DIGEST_SIZE..2 * DIGEST_SIZE].copy_from_slice(digests[0].as_elements());
+
+        // Apply internal Anemoi permutation
+        apply_permutation(&mut state);
+
+        Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
     }
 }
 

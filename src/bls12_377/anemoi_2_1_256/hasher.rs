@@ -81,7 +81,7 @@ impl Sponge<Felt> for AnemoiHash {
         apply_permutation(&mut state);
         digest_array[1] = state[0];
 
-        AnemoiDigest::new(digest_array)
+        Self::Digest::new(digest_array)
     }
 
     fn hash_field(elems: &[Felt]) -> Self::Digest {
@@ -103,7 +103,12 @@ impl Sponge<Felt> for AnemoiHash {
         apply_permutation(&mut state);
         digest_array[1] = state[0];
 
-        AnemoiDigest::new(digest_array)
+        Self::Digest::new(digest_array)
+    }
+
+    // This will require 2 calls of the underlying Anemoi permutation.
+    fn merge(digests: &[Self::Digest; 2]) -> Self::Digest {
+        Self::hash_field(&Self::Digest::digests_to_elements(digests))
     }
 }
 
