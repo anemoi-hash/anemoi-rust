@@ -111,7 +111,7 @@ mod tests {
     fn apply_naive_mds(state: &mut [Felt; STATE_WIDTH]) {
         let mut result = [Felt::zero(); STATE_WIDTH];
         for (i, r) in result.iter_mut().enumerate().take(STATE_WIDTH) {
-            for (j, s) in state.into_iter().enumerate().take(STATE_WIDTH) {
+            for (j, s) in state.iter().enumerate().take(STATE_WIDTH) {
                 *r += *s * mds::MDS[i * STATE_WIDTH + j]
             }
         }
