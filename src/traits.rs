@@ -17,9 +17,9 @@ pub trait Sponge<F: Field> {
 
 /// Trait for implementing a Jive compression function instantiation.
 pub trait Jive<F: Field> {
-    /// Compress the provided field element slice as input.
+    /// Compresses the provided field element slice as input by 2.
     fn compress(elems: &[F]) -> Vec<F>;
 
-    /// Compress the provided field element slice as input by a factor k.
+    /// Compresses the provided field element slice as input by a factor k.
     fn compress_k(elems: &[F], k: usize) -> Vec<F>;
 }
