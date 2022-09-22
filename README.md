@@ -43,14 +43,14 @@ In addition to be representable with a short set of constraints in a circuit, ma
 
 | Field \ Hash 10KB | Anemoi-2-1 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | -------------- | ---------- |
-| BLS12-377 | 97.183 ms | 30.820 ms | 28.991 ms |
+| BLS12-377 | 85.369 ms | 28.697 ms | 25.178 ms |
 | BLS12-381 | 86.979 ms | 27.263 ms | 29.249 ms |
 | BN-254 | 46.522 ms | 14.786 ms | 14.387 ms |
 | Jubjub | 49.951 ms | 15.640 ms | 15.807 ms |
 
 | Field \ Compression | Anemoi-2-1 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | -------------- | ------------ |
-| BLS12-377 | 405.83 µs | 857.37 µs | 1.2902 µs |
+| BLS12-377 | 425.12 µs | 831.42 µs | 1.4192 µs |
 | BLS12-381 | 397.67 µs | 842.77 µs | 1.2744 ms |
 | BN-254 | 148.34 µs | 329.67 µs | 468.49 µs |
 | Jubjub | 152.35 µs | 324.26 µs | 492.20 µs |
