@@ -36,13 +36,13 @@ pub const NUM_HASH_ROUNDS: usize = 14;
 // HELPER FUNCTIONS
 // ================================================================================================
 
-/// The field multiplicative generator: G = 5
-const G: Felt = Felt::new(BigInteger256([
-    0xa1a55e68ffffffed,
-    0x74c2a54b4f4982f3,
-    0xfffffffffffffffd,
-    0x3fffffffffffffff,
-]));
+#[inline(always)]
+fn mul_by_generator(x: &Felt) -> Felt {
+    let x2 = x.double();
+    let x4 = x2.double();
+
+    x4 + x
+}
 
 #[inline(always)]
 /// Applies exponentiation of the current hash
@@ -83,24 +83,24 @@ pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
     let x: [Felt; NUM_COLUMNS] = [state[0], state[1], state[2], state[3]];
     let y: [Felt; NUM_COLUMNS] = [state[5], state[6], state[7], state[4]];
 
-    let g_x0 = G * x[0];
-    let g_x1 = G * x[1];
-    let g_x2 = G * x[2];
-    let g_x3 = G * x[3];
-    let g_squared_x0 = G * g_x0;
-    let g_squared_x1 = G * g_x1;
+    let g_x0 = mul_by_generator(&x[0]);
+    let g_x1 = mul_by_generator(&x[1]);
+    let g_x2 = mul_by_generator(&x[2]);
+    let g_x3 = mul_by_generator(&x[3]);
+    let g_squared_x0 = mul_by_generator(&g_x0);
+    let g_squared_x1 = mul_by_generator(&g_x1);
 
     state[0] = x[0] + x[1] + g_x1 + g_x2 + g_x3;
     state[2] = g_squared_x0 + g_squared_x1 + x[2] + x[3] + g_x3;
     state[1] = state[2] + g_x1 + g_x2 + g_x3;
     state[3] = state[0] + g_x0 + g_x1 + x[3];
 
-    let g_y0 = G * y[0];
-    let g_y1 = G * y[1];
-    let g_y2 = G * y[2];
-    let g_y3 = G * y[3];
-    let g_squared_y0 = G * g_y0;
-    let g_squared_y1 = G * g_y1;
+    let g_y0 = mul_by_generator(&y[0]);
+    let g_y1 = mul_by_generator(&y[1]);
+    let g_y2 = mul_by_generator(&y[2]);
+    let g_y3 = mul_by_generator(&y[3]);
+    let g_squared_y0 = mul_by_generator(&g_y0);
+    let g_squared_y1 = mul_by_generator(&g_y1);
 
     state[4] = y[0] + y[1] + g_y1 + g_y2 + g_y3;
     state[6] = g_squared_y0 + g_squared_y1 + y[2] + y[3] + g_y3;
