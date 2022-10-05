@@ -1,4 +1,4 @@
-use super::{sbox, BigInteger256, Felt};
+use super::{mul_by_generator, sbox, BigInteger256, Felt};
 use crate::{Jive, Sponge};
 use ark_ff::{Field, One, Zero};
 use unroll::unroll_for_loops;
@@ -75,9 +75,9 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
     let xy: [Felt; NUM_COLUMNS + 1] = [state[0], state[1]];
 
-    let tmp = xy[1] * mds::MDS[1];
+    let tmp = mul_by_generator(&xy[1]);
     state[0] = xy[0] + tmp;
-    state[1] = (tmp + xy[0]) * mds::MDS[1] + xy[1];
+    state[1] = mul_by_generator(&(tmp + xy[0])) + xy[1];
 }
 
 // ANEMOI PERMUTATION
