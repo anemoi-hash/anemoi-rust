@@ -3,12 +3,12 @@ use super::Felt;
 use super::NUM_COLUMNS;
 
 /// Maximum Diffusion Layer matrix for Anemoi
-// [1, 1, 3, 4, 5, 6]
-// [6, 1, 1, 3, 4, 5]
-// [5, 6, 1, 1, 3, 4]
-// [4, 5, 6, 1, 1, 3]
-// [3, 4, 5, 6, 1, 1]
-// [1, 3, 4, 5, 6, 1]
+/// [1 1 3 4 5 6]
+/// [6 1 1 3 4 5]
+/// [5 6 1 1 3 4]
+/// [4 5 6 1 1 3]
+/// [3 4 5 6 1 1]
+/// [1 3 4 5 6 1]
 #[allow(unused)]
 pub(crate) const MDS: [Felt; NUM_COLUMNS * NUM_COLUMNS] = [
     Felt::new(BigInteger384([
