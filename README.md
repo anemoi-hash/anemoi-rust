@@ -2,7 +2,7 @@
 
 This crate provides a Rust implementation of several instantiations of the [Anemoi hash function by Bouvier et al.](https://eprint.iacr.org/2022/840.pdf) over base fields of commonly used curves, backed by the arkworks ecosystem.
 
-It features three different instantiations per underlying field, and targets both 128 or 256 bits security at the user convenience.
+It features three different instantiations per underlying field, and targets 128 bits security.
 
 * This implementation can be used in `no-std` environments by relying on the `alloc` crate instead. The use of the Rust standard library is activated by default through the `std` feature.
 
@@ -36,8 +36,8 @@ All instantiations including their test vectors have been generated from this py
 
 By default, all instantiations are available, as well as the Rust standard library. To compile for a no-std environment like WASM, one can turn off the `std` feature
 by adding `--no-default-features` when compiling. This will require to manually specify which instantiation we want to access, with which security level. For instance,
-to use instances of Anemoi over the BLS12-381 base field without `std`, with 128 bits security level, one could compile with
-`cargo build --no-default-features --features bls381,128_bits`.
+to use instances of Anemoi over the BLS12-381 base field without `std` with 128 bits security level, one could compile with
+`cargo build --no-default-features --features bls381`.
 
 ## Performances
 

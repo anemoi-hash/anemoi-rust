@@ -29,8 +29,6 @@ default = [
     "jubjub",
     "pallas",
     "vesta",
-    "128_bits",
-    "256_bits"
 ]
 std = [
     "ark-std/std",
@@ -41,8 +39,6 @@ std = [
 bls_377 = ["ark-bls12-377/curve"]
 bls_381 = ["ark-bls12-381/curve"]
 bn_254 = ["ark-bn254/curve"]
-128_bits = []
-256_bits = []
 jubjub = ["ark-bls12-381/scalar_field"]
 pallas = ["ark-pallas/curve"]
 vesta = ["ark-pallas/scalar_field"]
@@ -54,17 +50,7 @@ harness = false
 required-features = ["bls_377"]
 
 [[bench]]
-name = "anemoi-bls12_377-256"
-harness = false
-required-features = ["bls_377"]
-
-[[bench]]
 name = "anemoi-bls12_381-128"
-harness = false
-required-features = ["bls_381"]
-
-[[bench]]
-name = "anemoi-bls12_381-256"
 harness = false
 required-features = ["bls_381"]
 
@@ -74,17 +60,7 @@ harness = false
 required-features = ["bn_254"]
 
 [[bench]]
-name = "anemoi-bn_254-256"
-harness = false
-required-features = ["bn_254"]
-
-[[bench]]
 name = "anemoi-jubjub-128"
-harness = false
-required-features = ["jubjub"]
-
-[[bench]]
-name = "anemoi-jubjub-256"
 harness = false
 required-features = ["jubjub"]
 
@@ -94,16 +70,6 @@ harness = false
 required-features = ["pallas"]
 
 [[bench]]
-name = "anemoi-pallas-256"
-harness = false
-required-features = ["pallas"]
-
-[[bench]]
 name = "anemoi-vesta-128"
-harness = false
-required-features = ["vesta"]
-
-[[bench]]
-name = "anemoi-vesta-256"
 harness = false
 required-features = ["vesta"]
