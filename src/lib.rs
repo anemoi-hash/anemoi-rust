@@ -38,3 +38,8 @@ pub mod bn_254;
 /// in Sponge and Jive modes over Jubjub base field.
 #[cfg(feature = "jubjub")]
 pub mod jubjub;
+
+/// An implementation of some instantiations of the Anemoi permutation
+/// in Sponge and Jive modes over Pallas base field.
+#[cfg(feature = "pallas")]
+pub mod pallas;

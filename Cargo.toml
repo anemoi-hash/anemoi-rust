@@ -9,6 +9,7 @@ ark-bls12-377 = { version="^0.3.0", default-features = false, optional = true }
 ark-bls12-381 = { version="^0.3.0", default-features = false, optional = true }
 ark-bn254 = { version="^0.3.0", default-features = false, optional = true }
 ark-ec = { version="^0.3.0", default-features = false }
+ark-pallas = { version="^0.3.0", default-features = false, optional = true }
 ark-std = { version="^0.3.0", default-features = false }
 getrandom = { version = "0.2", default-features = false, features = ["js"] }
 rand_core = { version = "0.6.2", default-features = false, features = ["getrandom"] }
@@ -26,6 +27,7 @@ default = [
     "bls_381",
     "bn_254",
     "jubjub",
+    "pallas",
     "128_bits",
     "256_bits"
 ]
@@ -41,6 +43,7 @@ bn_254 = ["ark-bn254/curve"]
 128_bits = []
 256_bits = []
 jubjub = ["ark-bls12-381/scalar_field"]
+pallas = ["ark-pallas/curve"]
 
 
 [[bench]]
@@ -82,3 +85,13 @@ required-features = ["jubjub"]
 name = "anemoi-jubjub-256"
 harness = false
 required-features = ["jubjub"]
+
+[[bench]]
+name = "anemoi-pallas-128"
+harness = false
+required-features = ["pallas"]
+
+[[bench]]
+name = "anemoi-pallas-256"
+harness = false
+required-features = ["pallas"]
