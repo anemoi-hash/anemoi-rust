@@ -15,6 +15,7 @@ The currently supported fields are:
 * BN-254 basefield
 * Jubjub basefield (= BLS12-381 scalar field)
 * Pallas basefield (= Vesta scalar field)
+* Vesta basefield (= Pallas scalar field)
 
 For each of those fields, three instantiations of the Anemoi sponge construction are available:
 

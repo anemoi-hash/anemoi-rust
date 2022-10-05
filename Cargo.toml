@@ -28,6 +28,7 @@ default = [
     "bn_254",
     "jubjub",
     "pallas",
+    "vesta",
     "128_bits",
     "256_bits"
 ]
@@ -44,6 +45,7 @@ bn_254 = ["ark-bn254/curve"]
 256_bits = []
 jubjub = ["ark-bls12-381/scalar_field"]
 pallas = ["ark-pallas/curve"]
+vesta = ["ark-pallas/scalar_field"]
 
 
 [[bench]]
@@ -95,3 +97,13 @@ required-features = ["pallas"]
 name = "anemoi-pallas-256"
 harness = false
 required-features = ["pallas"]
+
+[[bench]]
+name = "anemoi-vesta-128"
+harness = false
+required-features = ["vesta"]
+
+[[bench]]
+name = "anemoi-vesta-256"
+harness = false
+required-features = ["vesta"]
