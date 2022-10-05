@@ -153,34 +153,8 @@ mod tests {
     fn test_sbox() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
-            [
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            [Felt::zero(); 12],
+            [Felt::one(); 12],
             [
                 Felt::zero(),
                 Felt::zero(),
@@ -1381,34 +1355,8 @@ mod tests {
     fn test_mds() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
-            [
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            [Felt::zero(); 12],
+            [Felt::one(); 12],
             [
                 Felt::zero(),
                 Felt::zero(),
@@ -1886,20 +1834,7 @@ mod tests {
         let mut input2 = input;
 
         let output = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
+            [Felt::zero(); 12],
             [
                 Felt::new(BigInteger256([
                     0xbb0de6dcffffffb1,

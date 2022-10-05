@@ -49,6 +49,8 @@ In addition to be representable with a short set of constraints in a circuit, ma
 | BLS12-381 | 86.979 ms | 27.263 ms | 29.249 ms |
 | BN-254 | 46.522 ms | 14.786 ms | 14.387 ms |
 | Jubjub | 49.951 ms | 15.640 ms | 15.807 ms |
+| Pallas | 47.621 ms | 15.175 ms | 15.203 ms |
+| Vesta | 47.219 ms | 14.988 ms | 15.371 ms |
 
 | Field \ Compression | Anemoi-2-1 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | -------------- | ------------ |
@@ -56,9 +58,11 @@ In addition to be representable with a short set of constraints in a circuit, ma
 | BLS12-381 | 397.67 µs | 842.77 µs | 1.2744 ms |
 | BN-254 | 148.34 µs | 329.67 µs | 468.49 µs |
 | Jubjub | 152.35 µs | 324.26 µs | 492.20 µs |
+| Pallas | 150.17 µs | 327.52 µs | 493.18 µs |
+| Vesta | 147.99 µs | 330.64 µs | 481.34 µs |
 
 As expected, the larger the underlying prime field on which we operate, the slower the hash operations get. Seen from the other angle, FRI-based protocols which do not require an algebraic group can benefit from much more efficient instantiations of Anemoi over smaller fields. As a comparison, the implementation of Anemoi-8-7 
-at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks" field can hash 10KB of data in 951.71 µs, i.e. about 16x and 29x faster than the same instantiations over Jubjub and BLS12-381 base fields, respectively.
+at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks" field can hash 10KB of data in 1.231 ms, i.e. about 41x and 71x faster than the same instantiations over Jubjub and BLS12-381 base fields, respectively.
 
 ## License
 

@@ -169,26 +169,8 @@ mod tests {
     fn test_sbox() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
-            [
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            [Felt::zero(); 8],
+            [Felt::one(); 8],
             [
                 Felt::zero(),
                 Felt::zero(),
@@ -1006,26 +988,8 @@ mod tests {
     fn test_mds() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
-            [
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            [Felt::zero(); 8],
+            [Felt::one(); 8],
             [
                 Felt::zero(),
                 Felt::zero(),
@@ -1351,16 +1315,7 @@ mod tests {
         let mut input2 = input;
 
         let output = [
-            [
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
+            [Felt::zero(); 8],
             [
                 Felt::new(BigInteger256([
                     0x4970765cffffffbd,

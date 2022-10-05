@@ -205,20 +205,7 @@ mod tests {
     fn test_anemoi_hash() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let input_data = [
-            vec![
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
+            vec![Felt::zero(); 12],
             vec![
                 Felt::one(),
                 Felt::one(),
@@ -551,20 +538,7 @@ mod tests {
     fn test_anemoi_jive() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let input_data = [
-            vec![
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
+            vec![Felt::zero(); 12],
             vec![
                 Felt::one(),
                 Felt::one(),
@@ -1445,20 +1419,7 @@ mod tests {
         }
 
         let input_data = [
-            vec![
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-                Felt::zero(),
-            ],
+            vec![Felt::zero(); 12],
             vec![
                 Felt::one(),
                 Felt::one(),
