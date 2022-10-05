@@ -72,19 +72,22 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
     let x: [Felt; NUM_COLUMNS] = [state[0], state[1], state[2], state[3], state[4], state[5]];
     let y: [Felt; NUM_COLUMNS] = [state[7], state[8], state[9], state[10], state[11], state[6]];
-    state[0] = x[0] + x[1] + x[2] + x[4] + (x[2] + x[5] + (x[3] + x[4] + x[5]).double()).double();
-    state[1] = x[1] + x[2] + x[3] + x[5] + (x[3] + x[0] + (x[4] + x[5] + x[0]).double()).double();
-    state[2] = x[2] + x[3] + x[4] + x[0] + (x[4] + x[1] + (x[5] + x[0] + x[1]).double()).double();
-    state[3] = x[3] + x[4] + x[5] + x[1] + (x[5] + x[2] + (x[0] + x[1] + x[2]).double()).double();
-    state[4] = x[4] + x[5] + x[0] + x[2] + (x[0] + x[3] + (x[1] + x[2] + x[3]).double()).double();
-    state[5] = x[5] + x[0] + x[1] + x[3] + (x[1] + x[4] + (x[2] + x[3] + x[4]).double()).double();
 
-    state[6] = y[0] + y[1] + y[2] + y[4] + (y[2] + y[5] + (y[3] + y[4] + y[5]).double()).double();
-    state[7] = y[1] + y[2] + y[3] + y[5] + (y[3] + y[0] + (y[4] + y[5] + y[0]).double()).double();
-    state[8] = y[2] + y[3] + y[4] + y[0] + (y[4] + y[1] + (y[5] + y[0] + y[1]).double()).double();
-    state[9] = y[3] + y[4] + y[5] + y[1] + (y[5] + y[2] + (y[0] + y[1] + y[2]).double()).double();
-    state[10] = y[4] + y[5] + y[0] + y[2] + (y[0] + y[3] + (y[1] + y[2] + y[3]).double()).double();
-    state[11] = y[5] + y[0] + y[1] + y[3] + (y[1] + y[4] + (y[2] + y[3] + y[4]).double()).double();
+    let sum_coeffs = x[0] + x[1] + x[2] + x[3] + x[4] + x[5];
+    state[0] = sum_coeffs + x[3] + x[5] + (x[2] + x[3] + (x[4] + x[5]).double()).double();
+    state[1] = sum_coeffs + x[4] + x[0] + (x[3] + x[4] + (x[5] + x[0]).double()).double();
+    state[2] = sum_coeffs + x[5] + x[1] + (x[4] + x[5] + (x[0] + x[1]).double()).double();
+    state[3] = sum_coeffs + x[0] + x[2] + (x[5] + x[0] + (x[1] + x[2]).double()).double();
+    state[4] = sum_coeffs + x[1] + x[3] + (x[0] + x[1] + (x[2] + x[3]).double()).double();
+    state[5] = sum_coeffs + x[2] + x[4] + (x[1] + x[2] + (x[3] + x[4]).double()).double();
+
+    let sum_coeffs = y[0] + y[1] + y[2] + y[3] + y[4] + y[5];
+    state[6] = sum_coeffs + y[3] + y[5] + (y[2] + y[3] + (y[4] + y[5]).double()).double();
+    state[7] = sum_coeffs + y[4] + y[0] + (y[3] + y[4] + (y[5] + y[0]).double()).double();
+    state[8] = sum_coeffs + y[5] + y[1] + (y[4] + y[5] + (y[0] + y[1]).double()).double();
+    state[9] = sum_coeffs + y[0] + y[2] + (y[5] + y[0] + (y[1] + y[2]).double()).double();
+    state[10] = sum_coeffs + y[1] + y[3] + (y[0] + y[1] + (y[2] + y[3]).double()).double();
+    state[11] = sum_coeffs + y[2] + y[4] + (y[1] + y[2] + (y[3] + y[4]).double()).double();
 }
 
 // ANEMOI PERMUTATION
