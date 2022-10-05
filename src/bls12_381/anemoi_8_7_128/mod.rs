@@ -1,4 +1,4 @@
-use super::{sbox, BigInteger384, Felt};
+use super::{mul_by_generator, sbox, BigInteger384, Felt};
 use crate::{Jive, Sponge};
 use ark_ff::{Field, One, Zero};
 use unroll::unroll_for_loops;
@@ -35,11 +35,6 @@ pub const NUM_HASH_ROUNDS: usize = 10;
 
 // HELPER FUNCTIONS
 // ================================================================================================
-
-#[inline(always)]
-fn mul_by_generator(x: &Felt) -> Felt {
-    x.double()
-}
 
 #[inline(always)]
 /// Applies exponentiation of the current hash
