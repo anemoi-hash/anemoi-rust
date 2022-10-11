@@ -68,32 +68,22 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 /// Applies matrix-vector multiplication of the current
 /// hash state with the Anemoi MDS matrix.
 pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
-    let x: [Felt; NUM_COLUMNS] = [state[0], state[1], state[2], state[3]];
-    let y: [Felt; NUM_COLUMNS] = [state[5], state[6], state[7], state[4]];
+    let y: [Felt; NUM_COLUMNS] = state[NUM_COLUMNS..].try_into().unwrap();
+    apply_mds_internal(&mut state[..NUM_COLUMNS]);
+    state[NUM_COLUMNS..].copy_from_slice(&[y[1], y[2], y[3], y[0]]);
+    apply_mds_internal(&mut state[NUM_COLUMNS..]);
+}
 
-    let g_x0 = mul_by_generator(&x[0]);
-    let g_x1 = mul_by_generator(&x[1]);
-    let g_x2 = mul_by_generator(&x[2]);
-    let g_x3 = mul_by_generator(&x[3]);
-    let g_squared_x0 = mul_by_generator(&g_x0);
-    let g_squared_x1 = mul_by_generator(&g_x1);
-
-    state[0] = x[0] + x[1] + g_x1 + g_x2 + g_x3;
-    state[2] = g_squared_x0 + g_squared_x1 + x[2] + x[3] + g_x3;
-    state[1] = state[2] + g_x1 + g_x2 + g_x3;
-    state[3] = state[0] + g_x0 + g_x1 + x[3];
-
-    let g_y0 = mul_by_generator(&y[0]);
-    let g_y1 = mul_by_generator(&y[1]);
-    let g_y2 = mul_by_generator(&y[2]);
-    let g_y3 = mul_by_generator(&y[3]);
-    let g_squared_y0 = mul_by_generator(&g_y0);
-    let g_squared_y1 = mul_by_generator(&g_y1);
-
-    state[4] = y[0] + y[1] + g_y1 + g_y2 + g_y3;
-    state[6] = g_squared_y0 + g_squared_y1 + y[2] + y[3] + g_y3;
-    state[5] = state[6] + g_y1 + g_y2 + g_y3;
-    state[7] = state[4] + g_y0 + g_y1 + y[3];
+#[inline(always)]
+fn apply_mds_internal(state: &mut [Felt]) {
+    state[0] += state[1];
+    state[2] += state[3];
+    state[3] += mul_by_generator(&state[0]);
+    state[1] = mul_by_generator(&(state[1] + state[2]));
+    state[0] += state[1];
+    state[2] += mul_by_generator(&state[3]);
+    state[1] += state[2];
+    state[3] += state[0];
 }
 
 // ANEMOI PERMUTATION
