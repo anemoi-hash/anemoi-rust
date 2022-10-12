@@ -3,7 +3,7 @@ use super::Felt;
 use super::NUM_COLUMNS;
 
 /// Maximum Diffusion Layer matrix for Anemoi
-// [  1  16  15  15]
+/// [  1  16  15  15]
 /// [225 240  16  31]
 /// [225 225   1  16]
 /// [ 16  31  15  16]

@@ -3,7 +3,7 @@ use super::Felt;
 use super::NUM_COLUMNS;
 
 /// Maximum Diffusion Layer matrix for Anemoi
-// [1  2]
+/// [1  2]
 /// [2  5]
 #[allow(unused)]
 pub(crate) const MDS: [Felt; (NUM_COLUMNS + 1) * (NUM_COLUMNS + 1)] = [
