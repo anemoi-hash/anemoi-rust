@@ -206,16 +206,7 @@ mod tests {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let input_data = [
             vec![Felt::zero(); 8],
-            vec![
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            vec![Felt::one(); 8],
             vec![
                 Felt::zero(),
                 Felt::zero(),
@@ -447,16 +438,7 @@ mod tests {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let input_data = [
             vec![Felt::zero(); 8],
-            vec![
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            vec![Felt::one(); 8],
             vec![
                 Felt::zero(),
                 Felt::zero(),
@@ -1052,16 +1034,7 @@ mod tests {
 
         let input_data = [
             vec![Felt::zero(); 8],
-            vec![
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            vec![Felt::one(); 8],
             vec![
                 Felt::zero(),
                 Felt::zero(),

@@ -207,20 +207,7 @@ mod tests {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let input_data = [
             vec![Felt::zero(); 12],
-            vec![
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-                Felt::one(),
-            ],
+            vec![Felt::one(); 12],
             vec![
                 Felt::zero(),
                 Felt::zero(),
