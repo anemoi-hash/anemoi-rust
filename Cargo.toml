@@ -26,6 +26,7 @@ default = [
     "bls_377",
     "bls_381",
     "bn_254",
+    "ed_on_bls12_377",
     "jubjub",
     "pallas",
     "vesta",
@@ -39,6 +40,7 @@ std = [
 bls_377 = ["ark-bls12-377/curve"]
 bls_381 = ["ark-bls12-381/curve"]
 bn_254 = ["ark-bn254/curve"]
+ed_on_bls12_377 = ["ark-bls12-377/scalar_field"]
 jubjub = ["ark-bls12-381/scalar_field"]
 pallas = ["ark-pallas/curve"]
 vesta = ["ark-pallas/scalar_field"]
@@ -58,6 +60,11 @@ required-features = ["bls_381"]
 name = "anemoi-bn_254-128"
 harness = false
 required-features = ["bn_254"]
+
+[[bench]]
+name = "anemoi-ed_on_bls12_377-128"
+harness = false
+required-features = ["ed_on_bls12_377"]
 
 [[bench]]
 name = "anemoi-jubjub-128"

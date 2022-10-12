@@ -35,6 +35,11 @@ pub mod bls12_381;
 pub mod bn_254;
 
 /// An implementation of some instantiations of the Anemoi permutation
+/// in Sponge and Jive modes over ED_ON_BLS12-377 base field.
+#[cfg(feature = "ed_on_bls12_377")]
+pub mod ed_on_bls12_377;
+
+/// An implementation of some instantiations of the Anemoi permutation
 /// in Sponge and Jive modes over Jubjub base field.
 #[cfg(feature = "jubjub")]
 pub mod jubjub;
