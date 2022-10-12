@@ -45,8 +45,7 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 
     x.iter_mut().enumerate().for_each(|(i, t)| {
         let y2 = y[i].square();
-        let beta_y2 = y2.double().double().double().double() - y2;
-        *t -= beta_y2
+        *t -= mul_by_generator(&y2);
     });
 
     let mut x_alpha_inv = x;
@@ -60,8 +59,7 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 
     x.iter_mut().enumerate().for_each(|(i, t)| {
         let y2 = y[i].square();
-        let beta_y2 = y2.double().double().double().double() - y2;
-        *t += beta_y2 + sbox::DELTA
+        *t += mul_by_generator(&y2) + sbox::DELTA;
     });
 
     state[..NUM_COLUMNS].copy_from_slice(&x);

@@ -1,4 +1,4 @@
-use super::{sbox, BigInteger384, Felt};
+use super::{mul_by_generator, sbox, BigInteger384, Felt};
 use crate::{Jive, Sponge};
 use ark_ff::{Field, One, Zero};
 use unroll::unroll_for_loops;
@@ -43,9 +43,10 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
     let mut x: [Felt; NUM_COLUMNS] = state[..NUM_COLUMNS].try_into().unwrap();
     let mut y: [Felt; NUM_COLUMNS] = state[NUM_COLUMNS..].try_into().unwrap();
 
-    x.iter_mut()
-        .enumerate()
-        .for_each(|(i, t)| *t -= y[i].square().double());
+    x.iter_mut().enumerate().for_each(|(i, t)| {
+        let y2 = y[i].square();
+        *t -= mul_by_generator(&y2);
+    });
 
     let mut x_alpha_inv = x;
     x_alpha_inv
@@ -56,9 +57,10 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
         .enumerate()
         .for_each(|(i, t)| *t -= x_alpha_inv[i]);
 
-    x.iter_mut()
-        .enumerate()
-        .for_each(|(i, t)| *t += y[i].square().double() + sbox::DELTA);
+    x.iter_mut().enumerate().for_each(|(i, t)| {
+        let y2 = y[i].square();
+        *t += mul_by_generator(&y2) + sbox::DELTA;
+    });
 
     state[..NUM_COLUMNS].copy_from_slice(&x);
     state[NUM_COLUMNS..].copy_from_slice(&y);
