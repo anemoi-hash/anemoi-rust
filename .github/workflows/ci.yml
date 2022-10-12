@@ -87,4 +87,4 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --verbose --no-default-features --target ${{ matrix.target }} --features bls_381,bls_377,bn_254,jubjub,128_bits,256_bits
+          args: --verbose --no-default-features --target ${{ matrix.target }} --features bls_381,bls_377,bn_254,jubjub,pallas,vesta
