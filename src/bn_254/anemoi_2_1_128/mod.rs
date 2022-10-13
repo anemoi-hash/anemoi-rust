@@ -92,6 +92,7 @@ pub(crate) fn apply_permutation(state: &mut [Felt; STATE_WIDTH]) {
 
 /// Applies an Anemoi round to the provided state
 #[inline(always)]
+#[unroll_for_loops]
 pub(crate) fn apply_round(state: &mut [Felt; STATE_WIDTH], step: usize) {
     state[0] += round_constants::C[step % NUM_HASH_ROUNDS];
     state[1] += round_constants::D[step % NUM_HASH_ROUNDS];
