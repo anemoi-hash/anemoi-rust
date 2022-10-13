@@ -70,11 +70,8 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 /// Applies matrix-vector multiplication of the current
 /// hash state with the Anemoi MDS matrix.
 pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
-    let xy: [Felt; NUM_COLUMNS + 1] = [state[0], state[1]];
-
-    let tmp = mul_by_generator(&xy[1]);
-    state[0] = xy[0] + tmp;
-    state[1] = mul_by_generator(&(tmp + xy[0])) + xy[1];
+    state[0] += mul_by_generator(&state[1]);
+    state[1] += mul_by_generator(&state[0]);
 }
 
 // ANEMOI PERMUTATION
