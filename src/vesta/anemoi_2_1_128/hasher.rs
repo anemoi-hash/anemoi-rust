@@ -98,6 +98,7 @@ impl Sponge<Felt> for AnemoiHash {
         // Finally, return the first DIGEST_SIZE elements of the state.
         Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
     }
+
     fn merge(digests: &[Self::Digest; 2]) -> Self::Digest {
         // We use internally the Jive compression method, as compressing the digests
         // through the Sponge construction would require two internal permutation calls.
