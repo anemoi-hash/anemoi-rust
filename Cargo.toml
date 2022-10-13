@@ -47,36 +47,36 @@ vesta = ["ark-pallas/scalar_field"]
 
 
 [[bench]]
-name = "anemoi-bls12_377-128"
+name = "bls12_377"
 harness = false
 required-features = ["bls_377"]
 
 [[bench]]
-name = "anemoi-bls12_381-128"
+name = "bls12_381"
 harness = false
 required-features = ["bls_381"]
 
 [[bench]]
-name = "anemoi-bn_254-128"
+name = "bn_254"
 harness = false
 required-features = ["bn_254"]
 
 [[bench]]
-name = "anemoi-ed_on_bls12_377-128"
+name = "ed_on_bls12_377"
 harness = false
 required-features = ["ed_on_bls12_377"]
 
 [[bench]]
-name = "anemoi-jubjub-128"
+name = "jubjub"
 harness = false
 required-features = ["jubjub"]
 
 [[bench]]
-name = "anemoi-pallas-128"
+name = "pallas"
 harness = false
 required-features = ["pallas"]
 
 [[bench]]
-name = "anemoi-vesta-128"
+name = "vesta"
 harness = false
 required-features = ["vesta"]

@@ -12,63 +12,63 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function(
         "anemoi-jive/bn_254/2-1 (128 bits security) - 2-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_2_1_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_2_1::STATE_WIDTH];
 
-            bench.iter(|| anemoi_2_1_128::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_2_1::AnemoiHash::compress(black_box(&v)))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/4-3 (128 bits security) - 2-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_4_3_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_4_3::STATE_WIDTH];
 
-            bench.iter(|| anemoi_4_3_128::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_4_3::AnemoiHash::compress(black_box(&v)))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/4-3 (128 bits security) - 4-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_4_3_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_4_3::STATE_WIDTH];
 
-            bench.iter(|| anemoi_4_3_128::AnemoiHash::compress_k(black_box(&v), 4))
+            bench.iter(|| anemoi_4_3::AnemoiHash::compress_k(black_box(&v), 4))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/8-7 (128 bits security) - 2-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_8_7_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_8_7::STATE_WIDTH];
 
-            bench.iter(|| anemoi_8_7_128::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_8_7::AnemoiHash::compress(black_box(&v)))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/8-7 (128 bits security) - 8-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_8_7_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_8_7::STATE_WIDTH];
 
-            bench.iter(|| anemoi_8_7_128::AnemoiHash::compress_k(black_box(&v), 8))
+            bench.iter(|| anemoi_8_7::AnemoiHash::compress_k(black_box(&v), 8))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/12-11 (128 bits security) - 2-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_12_11_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_12_11::STATE_WIDTH];
 
-            bench.iter(|| anemoi_12_11_128::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_12_11::AnemoiHash::compress(black_box(&v)))
         },
     );
 
     c.bench_function(
         "anemoi-jive/bn_254/12-11 (128 bits security) - 12-to-1 compression",
         |bench| {
-            let v = [Felt::one(); anemoi_12_11_128::STATE_WIDTH];
+            let v = [Felt::one(); anemoi_12_11::STATE_WIDTH];
 
-            bench.iter(|| anemoi_12_11_128::AnemoiHash::compress_k(black_box(&v), 12))
+            bench.iter(|| anemoi_12_11::AnemoiHash::compress_k(black_box(&v), 12))
         },
     );
 
@@ -79,7 +79,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_2_1_128::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_2_1::AnemoiHash::hash(black_box(&data)))
         },
     );
 
@@ -90,7 +90,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_4_3_128::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_4_3::AnemoiHash::hash(black_box(&data)))
         },
     );
 
@@ -101,7 +101,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_8_7_128::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_8_7::AnemoiHash::hash(black_box(&data)))
         },
     );
 
@@ -112,7 +112,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_12_11_128::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_12_11::AnemoiHash::hash(black_box(&data)))
         },
     );
 }
