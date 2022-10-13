@@ -8,6 +8,10 @@ mod sbox;
 /// rate 1 aimed at providing 128 bits security.
 pub mod anemoi_2_1_128;
 
+/// An instantiation of Anemoi with state width 4 and
+/// rate 3 aimed at providing 128 bits security.
+pub mod anemoi_4_3_128;
+
 /// An instantiation of Anemoi with state width 8 and
 /// rate 7 aimed at providing 128 bits security.
 pub mod anemoi_8_7_128;
