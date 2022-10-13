@@ -515,13 +515,5 @@ mod tests {
         for (input, expected) in input_data.iter().zip(output_data) {
             assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 2));
         }
-
-        for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress(input));
-        }
-
-        for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 2));
-        }
     }
 }
