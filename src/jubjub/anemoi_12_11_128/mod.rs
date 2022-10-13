@@ -93,7 +93,7 @@ pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
 // ANEMOI PERMUTATION
 // ================================================================================================
 
-/// Applies Anemoi permutation to the provided state.
+/// Applies an Anemoi permutation to the provided state
 #[inline(always)]
 #[unroll_for_loops]
 pub(crate) fn apply_permutation(state: &mut [Felt; STATE_WIDTH]) {
@@ -104,8 +104,7 @@ pub(crate) fn apply_permutation(state: &mut [Felt; STATE_WIDTH]) {
     apply_mds(state)
 }
 
-/// Anemoi round function;
-/// implementation based on algorithm 3 of <https://eprint.iacr.org/2020/1143.pdf>
+/// Applies an Anemoi round to the provided state
 #[inline(always)]
 #[unroll_for_loops]
 pub(crate) fn apply_round(state: &mut [Felt; STATE_WIDTH], step: usize) {
