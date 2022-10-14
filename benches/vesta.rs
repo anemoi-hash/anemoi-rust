@@ -37,6 +37,24 @@ fn criterion_benchmark(c: &mut Criterion) {
     );
 
     c.bench_function(
+        "anemoi-jive/vesta/6-5 (128 bits security) - 2-to-1 compression",
+        |bench| {
+            let v = [Felt::one(); anemoi_6_5::STATE_WIDTH];
+
+            bench.iter(|| anemoi_6_5::AnemoiHash::compress(black_box(&v)))
+        },
+    );
+
+    c.bench_function(
+        "anemoi-jive/vesta/6-5 (128 bits security) - 6-to-1 compression",
+        |bench| {
+            let v = [Felt::one(); anemoi_6_5::STATE_WIDTH];
+
+            bench.iter(|| anemoi_6_5::AnemoiHash::compress_k(black_box(&v), 6))
+        },
+    );
+
+    c.bench_function(
         "anemoi-jive/vesta/8-7 (128 bits security) - 2-to-1 compression",
         |bench| {
             let v = [Felt::one(); anemoi_8_7::STATE_WIDTH];
@@ -91,6 +109,17 @@ fn criterion_benchmark(c: &mut Criterion) {
             rng.fill_bytes(&mut data);
 
             bench.iter(|| anemoi_4_3::AnemoiHash::hash(black_box(&data)))
+        },
+    );
+
+    c.bench_function(
+        "anemoi-sponge/vesta/6-5 (128 bits security) - hash 10KB",
+        |bench| {
+            let mut data = vec![0u8; 10 * 1024];
+            let mut rng = OsRng;
+            rng.fill_bytes(&mut data);
+
+            bench.iter(|| anemoi_6_5::AnemoiHash::hash(black_box(&data)))
         },
     );
 
