@@ -205,7 +205,7 @@ mod tests {
 
     #[test]
     fn test_anemoi_hash() {
-        // Generated from https://github.com/Nashtare/anemoi-hash/
+        // Generated from https://github.com/vesselinux/anemoi-hash/
         let input_data = [
             vec![Felt::zero(); 6],
             vec![Felt::one(); 6],
@@ -495,7 +495,7 @@ mod tests {
 
     #[test]
     fn test_anemoi_jive() {
-        // Generated from https://github.com/Nashtare/anemoi-hash/
+        // Generated from https://github.com/vesselinux/anemoi-hash/
         let input_data = [
             vec![Felt::zero(); 6],
             vec![Felt::one(); 6],

@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn test_sbox() {
-        // Generated from https://github.com/Nashtare/anemoi-hash/
+        // Generated from https://github.com/vesselinux/anemoi-hash/
         let mut input = [
             [Felt::zero(); 8],
             [Felt::one(); 8],
@@ -1213,7 +1213,7 @@ mod tests {
 
     #[test]
     fn test_mds() {
-        // Generated from https://github.com/Nashtare/anemoi-hash/
+        // Generated from https://github.com/vesselinux/anemoi-hash/
         let mut input = [
             [Felt::zero(); 8],
             [Felt::one(); 8],
