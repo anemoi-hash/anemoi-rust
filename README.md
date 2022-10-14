@@ -22,6 +22,8 @@ The currently supported fields are:
 For each of those fields, three instantiations of the Anemoi sponge construction are available:
 
 * 1 column (2 cells) and rate 1
+* 2 columns (4 cells) and rate 3
+* 3 columns (6 cells) and rate 5
 * 4 columns (8 cells) and rate 7
 * 6 columns (12 cells) and rate 11
 
