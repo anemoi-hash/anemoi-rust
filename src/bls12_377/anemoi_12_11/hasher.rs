@@ -178,9 +178,7 @@ impl Jive<Felt> for AnemoiHash {
     fn compress_k(elems: &[Felt], k: usize) -> Vec<Felt> {
         assert!(elems.len() == STATE_WIDTH);
         assert!(STATE_WIDTH % k == 0);
-        // We can output as few as 1 element while
-        // maintaining the targeted security level.
-        assert!(k <= STATE_WIDTH);
+        assert!(k % 2 == 0);
 
         let mut state = elems.try_into().unwrap();
         apply_permutation(&mut state);
