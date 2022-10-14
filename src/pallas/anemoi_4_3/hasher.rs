@@ -4,7 +4,7 @@
 use alloc::vec::Vec;
 
 use super::digest::AnemoiDigest;
-use super::{apply_permutation, DIGEST_SIZE, NUM_COLUMNS, STATE_WIDTH, RATE_WIDTH};
+use super::{apply_permutation, DIGEST_SIZE, NUM_COLUMNS, RATE_WIDTH, STATE_WIDTH};
 use super::{Jive, Sponge};
 
 use super::Felt;
