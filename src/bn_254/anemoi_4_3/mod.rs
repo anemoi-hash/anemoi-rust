@@ -45,7 +45,7 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 
     x.iter_mut().enumerate().for_each(|(i, t)| {
         let y2 = y[i].square();
-        let beta_y2 = y2.double() + y2;
+        let beta_y2 = mul_by_generator(&y2);
         *t -= beta_y2;
     });
 
@@ -60,7 +60,7 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 
     x.iter_mut().enumerate().for_each(|(i, t)| {
         let y2 = y[i].square();
-        let beta_y2 = y2.double() + y2;
+        let beta_y2 = mul_by_generator(&y2);
         *t += beta_y2 + sbox::DELTA;
     });
 
@@ -140,8 +140,8 @@ mod tests {
     fn test_sbox() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [Felt::zero(), Felt::zero(), Felt::zero(), Felt::zero()],
-            [Felt::one(), Felt::one(), Felt::one(), Felt::one()],
+            [Felt::zero(); 4],
+            [Felt::one(); 4],
             [Felt::zero(), Felt::zero(), Felt::one(), Felt::one()],
             [Felt::one(), Felt::one(), Felt::zero(), Felt::zero()],
             [
@@ -568,8 +568,8 @@ mod tests {
     fn test_mds() {
         // Generated from https://github.com/Nashtare/anemoi-hash/
         let mut input = [
-            [Felt::zero(), Felt::zero(), Felt::zero(), Felt::zero()],
-            [Felt::one(), Felt::one(), Felt::one(), Felt::one()],
+            [Felt::zero(); 4],
+            [Felt::one(); 4],
             [Felt::zero(), Felt::zero(), Felt::one(), Felt::one()],
             [Felt::one(), Felt::one(), Felt::zero(), Felt::zero()],
             [
@@ -733,7 +733,7 @@ mod tests {
         let mut input2 = input;
 
         let output = [
-            [Felt::zero(), Felt::zero(), Felt::zero(), Felt::zero()],
+            [Felt::zero(); 4],
             [
                 Felt::new(BigInteger256([
                     0x115482203dbf392d,
