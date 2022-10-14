@@ -425,6 +425,7 @@ mod tests {
                 0x0411f1b81fdd7205,
             ]))],
         ];
+
         for (input, expected) in input_data.iter().zip(output_data) {
             assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
         }

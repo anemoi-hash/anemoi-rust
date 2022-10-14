@@ -25,6 +25,7 @@ For each of those fields, three instantiations of the Anemoi sponge construction
 * 2 columns (4 cells) and rate 3
 * 3 columns (6 cells) and rate 5
 * 4 columns (8 cells) and rate 7
+* 5 columns (10 cells) and rate 9
 * 6 columns (12 cells) and rate 11
 
 *NOTE*: Thanks to the particular design of the Jive compression mode for Anemoi in Merkle trees configuration, one can put digests both in the capacity and rate registers, where other algebraic hash functions like Rescue-Prime or Poseidon would require a larger number of cells to use their sponge mode as a 2-to-1 compression function to live the capacity section untouched. In addition, there is almost no overhead of using the Jive compression method with a
@@ -47,6 +48,8 @@ to use instances of Anemoi over the BLS12-381 base field without `std` with 128 
 
 In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with `RUSTFLAGS="-C target-cpu=native" cargo bench`:
 
+### 2-to-1 compression
+
 | Field \ Compression | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | ----------- | -------------- | ------------ |
 | BLS12-377 | 396.41 µs | 493.55 µs | 818.02 µs | 1.2514 µs |
@@ -56,6 +59,8 @@ In addition to be representable with a short set of constraints in a circuit, ma
 | Jubjub | 170.72 µs | 229.40 µs | 335.26 µs | 506.81 µs |
 | Pallas | 141.41 µs | 170.97 µs | 291.87 µs | 435.68 µs |
 | Vesta | 129.48 µs | 186.36 µs | 285.26 µs | 440.80 µs |
+
+### Hashing
 
 | Field \ Hash 10KB | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | ----------- | -------------- | ---------- |

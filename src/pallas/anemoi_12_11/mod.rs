@@ -20,7 +20,7 @@ pub use hasher::AnemoiHash;
 // ANEMOI CONSTANTS
 // ================================================================================================
 
-/// Function state is set to 12 field elements or 576 bytes.
+/// Function state is set to 12 field elements or 384 bytes.
 /// 1 element of the state is reserved for capacity.
 pub const STATE_WIDTH: usize = 12;
 /// 11 elements of the state are reserved for rate.

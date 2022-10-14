@@ -73,6 +73,24 @@ fn criterion_benchmark(c: &mut Criterion) {
     );
 
     c.bench_function(
+        "anemoi-jive/ed_on_bls12_377/10-9 (128 bits security) - 2-to-1 compression",
+        |bench| {
+            let v = [Felt::one(); anemoi_10_9::STATE_WIDTH];
+
+            bench.iter(|| anemoi_10_9::AnemoiHash::compress(black_box(&v)))
+        },
+    );
+
+    c.bench_function(
+        "anemoi-jive/ed_on_bls12_377/10-9 (128 bits security) - 10-to-1 compression",
+        |bench| {
+            let v = [Felt::one(); anemoi_10_9::STATE_WIDTH];
+
+            bench.iter(|| anemoi_10_9::AnemoiHash::compress_k(black_box(&v), 10))
+        },
+    );
+
+    c.bench_function(
         "anemoi-jive/ed_on_bls12_377/12-11 (128 bits security) - 2-to-1 compression",
         |bench| {
             let v = [Felt::one(); anemoi_12_11::STATE_WIDTH];
@@ -131,6 +149,17 @@ fn criterion_benchmark(c: &mut Criterion) {
             rng.fill_bytes(&mut data);
 
             bench.iter(|| anemoi_8_7::AnemoiHash::hash(black_box(&data)))
+        },
+    );
+
+    c.bench_function(
+        "anemoi-sponge/ed_on_bls12_377/10_9 (128 bits security) - hash 10KB",
+        |bench| {
+            let mut data = vec![0u8; 10 * 1024];
+            let mut rng = OsRng;
+            rng.fill_bytes(&mut data);
+
+            bench.iter(|| anemoi_10_9::AnemoiHash::hash(black_box(&data)))
         },
     );
 
