@@ -38,7 +38,7 @@ All instantiations including their test vectors have been generated from this py
 By default, all instantiations are available, as well as the Rust standard library. To compile for a no-std environment like WASM, one can turn off the `std` feature
 by adding `--no-default-features` when compiling. This will require to manually specify which instantiation we want to access, with which security level. For instance,
 to use instances of Anemoi over the BLS12-381 base field without `std` with 128 bits security level, one could compile with
-`cargo build --no-default-features --features bls381`.
+`cargo build --no-default-features --features bls12_381`.
 
 ## Performances
 

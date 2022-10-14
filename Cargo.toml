@@ -23,8 +23,8 @@ criterion = "0.3"
 [features]
 default = [
     "std",
-    "bls_377",
-    "bls_381",
+    "bls12_377",
+    "bls12_381",
     "bn_254",
     "ed_on_bls12_377",
     "jubjub",
@@ -37,8 +37,8 @@ std = [
     "ark-ec/std",
     "rand_core/std"
 ]
-bls_377 = ["ark-bls12-377/curve"]
-bls_381 = ["ark-bls12-381/curve"]
+bls12_377 = ["ark-bls12-377/curve"]
+bls12_381 = ["ark-bls12-381/curve"]
 bn_254 = ["ark-bn254/curve"]
 ed_on_bls12_377 = ["ark-bls12-377/scalar_field"]
 jubjub = ["ark-bls12-381/scalar_field"]
@@ -49,12 +49,12 @@ vesta = ["ark-pallas/scalar_field"]
 [[bench]]
 name = "bls12_377"
 harness = false
-required-features = ["bls_377"]
+required-features = ["bls12_377"]
 
 [[bench]]
 name = "bls12_381"
 harness = false
-required-features = ["bls_381"]
+required-features = ["bls12_381"]
 
 [[bench]]
 name = "bn_254"
