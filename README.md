@@ -2,7 +2,8 @@
 
 This crate provides a Rust implementation of several instantiations of the [Anemoi hash function by Bouvier et al.](https://eprint.iacr.org/2022/840.pdf) over base fields of commonly used curves, backed by the arkworks ecosystem.
 
-It features three different instantiations per underlying field, and targets 128 bits security.
+It features different instantiations per underlying field, and targets 128 bits security. Each instantiation has an even state size `N`, with a rate size of `N-1`, granted that the present instantiations all work on fields
+large enough to ensure 128 bits security with a capacity of a single field element.
 
 * This implementation can be used in `no-std` environments by relying on the `alloc` crate instead. The use of the Rust standard library is activated by default through the `std` feature.
 
