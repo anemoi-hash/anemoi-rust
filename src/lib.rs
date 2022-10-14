@@ -22,13 +22,13 @@ pub use traits::*;
 /// An implementation of instantiations of the Anemoi permutation
 /// in Sponge and Jive modes targetting the 128-bit security level
 /// over BLS12-377 base field.
-#[cfg(feature = "bls_377")]
+#[cfg(feature = "bls12_377")]
 pub mod bls12_377;
 
 /// An implementation of instantiations of the Anemoi permutation
 /// in Sponge and Jive modes targetting the 128-bit security level
 /// over BLS12-381 base field.
-#[cfg(feature = "bls_381")]
+#[cfg(feature = "bls12_381")]
 pub mod bls12_381;
 
 /// An implementation of instantiations of the Anemoi permutation
