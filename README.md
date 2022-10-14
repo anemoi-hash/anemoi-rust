@@ -45,7 +45,7 @@ to use instances of Anemoi over the BLS12-381 base field without `std` with 128 
 In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with `RUSTFLAGS="-C target-cpu=native" cargo bench`:
 
 | Field \ Compression | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
-| ----------- | ----------- | -------------- | ------------ |
+| ----------- | ----------- | ----------- | -------------- | ------------ |
 | BLS12-377 | 396.41 µs | 493.55 µs | 818.02 µs | 1.2514 µs |
 | BLS12-381 | 433.43 µs | 541.73 µs | 810.05 µs | 1.4194 ms |
 | BN-254 | 142.40 µs | 179.67 µs | 330.81 µs | 448.30 µs |
@@ -55,7 +55,7 @@ In addition to be representable with a short set of constraints in a circuit, ma
 | Vesta | 129.48 µs | 186.36.55 µs | 285.26 µs | 440.80 µs |
 
 | Field \ Hash 10KB | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
-| ----------- | ----------- | -------------- | ---------- |
+| ----------- | ----------- | ----------- | -------------- | ---------- |
 | BLS12-377 | 85.369 ms | 35.937 ms | 27.206 ms | 28.603 ms |
 | BLS12-381 | 86.478 ms | 41.431 ms | 26.143 ms | 24.794 ms |
 | BN-254 | 53.219 ms | 22.458 ms | 14.549 ms | 14.588 ms |
