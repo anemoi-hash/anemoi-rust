@@ -55,7 +55,7 @@ In addition to be representable with a short set of constraints in a circuit, ma
 | ED on BLS12-377 | 157.84 µs | 191.61 µs | 304.42 µs | 453.30 µs |
 | Jubjub | 170.72 µs | 229.40 µs | 335.26 µs | 506.81 µs |
 | Pallas | 141.41 µs | 170.97 µs | 291.87 µs | 435.68 µs |
-| Vesta | 129.48 µs | 186.36.55 µs | 285.26 µs | 440.80 µs |
+| Vesta | 129.48 µs | 186.36 µs | 285.26 µs | 440.80 µs |
 
 | Field \ Hash 10KB | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
 | ----------- | ----------- | ----------- | -------------- | ---------- |
