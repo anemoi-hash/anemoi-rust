@@ -1,3 +1,5 @@
+//! Implementation of the Anemoi permutation
+
 use super::{mul_by_generator, sbox, BigInteger256, Felt};
 use crate::{Jive, Sponge};
 use ark_ff::{Field, One, Zero};

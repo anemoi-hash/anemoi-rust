@@ -1,3 +1,5 @@
+//! MDS matrix implementation for Anemoi
+
 use super::BigInteger384;
 use super::Felt;
 use super::NUM_COLUMNS;

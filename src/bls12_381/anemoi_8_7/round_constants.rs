@@ -1,3 +1,5 @@
+//! Additive round constants implementation for Anemoi
+
 use super::BigInteger384;
 use super::Felt;
 use super::{NUM_COLUMNS, NUM_HASH_ROUNDS};
