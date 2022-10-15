@@ -46,34 +46,24 @@ to use instances of Anemoi over the BLS12-381 base field without `std` with 128 
 
 ## Performances
 
-In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with `RUSTFLAGS="-C target-cpu=native" cargo bench`:
+In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with `RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta`:
 
 ### 2-to-1 compression
 
-| Field \ Compression | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
-| ----------- | ----------- | ----------- | -------------- | ------------ |
-| BLS12-377 | 396.41 µs | 493.55 µs | 818.02 µs | 1.2514 µs |
-| BLS12-381 | 433.43 µs | 541.73 µs | 810.05 µs | 1.4194 ms |
-| BN-254 | 142.40 µs | 179.67 µs | 330.81 µs | 448.30 µs |
-| ED on BLS12-377 | 157.84 µs | 191.61 µs | 304.42 µs | 453.30 µs |
-| Jubjub | 170.72 µs | 229.40 µs | 335.26 µs | 506.81 µs |
-| Pallas | 141.41 µs | 170.97 µs | 291.87 µs | 435.68 µs |
-| Vesta | 129.48 µs | 186.36 µs | 285.26 µs | 440.80 µs |
+| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 | Anemoi-6-5 | Anemoi-8-7 | Anemoi-10-9 | Anemoi-12-11 |
+| ----------- | ----------- | ----------- | -------------- | ------------ | ------------ | ------------ |
+| BLS12-377 | 429.61 µs | 485.99 µs | 610.08 µs | 815.19 µs | 1.0179 ms | 1.2245 ms |
+| Vesta | 129.48 µs | 176.58 µs | 243.45 µs | 292.13 µs | 406.56 µs | 440.80 µs |
 
-### Hashing
+### 10KB data hashing
 
-| Field \ Hash 10KB | Anemoi-2-1 | Anemoi-4-3 | Anemoi-8-7 | Anemoi-12-11 |
-| ----------- | ----------- | ----------- | -------------- | ---------- |
-| BLS12-377 | 85.369 ms | 35.937 ms | 27.206 ms | 28.603 ms |
-| BLS12-381 | 86.478 ms | 41.431 ms | 26.143 ms | 24.794 ms |
-| BN-254 | 53.219 ms | 22.458 ms | 14.549 ms | 14.588 ms |
-| ED on BLS12-377 | 50.076 ms | 28.744 ms | 17.053 ms | 16.137 ms |
-| Jubjub | 54.205 ms | 22.902 ms | 16.573 ms | 16.077 ms |
-| Pallas | 54.827 ms | 19.818 ms | 15.905 ms | 15.370 ms |
-| Vesta | 47.268 ms | 20.109 ms | 14.361 ms | 14.113 ms |
+| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 | Anemoi-6-5 | Anemoi-8-7 | Anemoi-10-9 | Anemoi-12-11 |
+| ----------- | ----------- | ----------- | -------------- | ---------- | ------------ | ------------ |
+| BLS12-377 | 85.369 ms | 35.937 ms | 30.141 ms | 28.519 ms | 26.151 ms | 24.766 ms |
+| Vesta | 44.448 ms | 20.307 ms | 15.042 ms | 14.361 ms | 15.414 ms | 13.987 ms |
 
 As expected, the larger the underlying prime field on which we operate, the slower the hash operations get. Seen from the other angle, FRI-based protocols which do not require an algebraic group can benefit from much more efficient instantiations of Anemoi over smaller fields. As a comparison, the implementation of Anemoi-8-7
-at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks" field can hash 10KB of data in 1.231 ms, i.e. about 44x and 70x faster than the same instantiations over Jubjub and BLS12-381 base fields, respectively.
+at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks" field can hash 10KB of data in 1.8249 ms, i.e. about 24x and 47x faster than instantiations with similar internal state byte size, over Vesta and BLS12-377 base fields, respectively. Perhaps more interestingly, it achieves 2-to-1 compression in 3.9317 µs, i.e. about 33x and 109x faster than Vesta and BLS12-377 instantiations respectively.
 
 ## License
 
