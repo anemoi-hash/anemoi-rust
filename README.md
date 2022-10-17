@@ -1,4 +1,4 @@
-# Anemoi-hash
+# Anemoi-Rust
 
 This crate provides a Rust implementation of several instantiations of the [Anemoi hash function by Bouvier et al.](https://eprint.iacr.org/2022/840.pdf) over base fields of commonly used curves, backed by the arkworks ecosystem.
 
