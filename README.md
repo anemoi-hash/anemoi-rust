@@ -35,7 +35,7 @@ higher compression factor, reducing the cost of hashing by increasing the Merkle
 p = 2<sup>64</sup> - 2<sup>32</sup> + 1, one can have a look at this repository: [Toposware/hash](https://github.com/toposware/hash/tree/anemoi). For a comparison of different algebraic
 hash functions including Anemoi over the BLS12-381 scalar field, one can have a look at this repository: [dannywillems/ocaml-bls12-381-hash](https://github.com/dannywillems/ocaml-bls12-381-hash).
 
-All instantiations including their test vectors have been generated from the official python reference implementation of Anemoi: [vesselinux/anemoi-hash](https://github.com/vesselinux/anemoi-hash).
+All instantiations including their test vectors have been generated from the official python reference implementation of Anemoi: [anemoi-hash/anemoi-hash](https://github.com/anemoi-hash/anemoi-hash).
 
 ## Features
 
