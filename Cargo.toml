@@ -1,7 +1,15 @@
 [package]
 name = "anemoi"
 version = "0.1.0"
+authors = ["Robin Salen <salenrobin@gmail.com>"]
 edition = "2021"
+description = "New Design Techniques for Efficient Arithmetization-Oriented Hash Functions:Anemoi Permutations and Jive Compression Mode"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/anemoi-hash/anemoi-rust"
+homepage = "https://github.com/anemoi-hash/anemoi-rust"
+keywords = ["cryptography", "hash", "hash-function", "anemoi", "sponge", "compression", "zero-knowledge"]
+categories = ["cryptography"]
 
 [dependencies]
 ark-ff = { version="^0.3.0", default-features = false }

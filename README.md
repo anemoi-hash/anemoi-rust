@@ -5,9 +5,13 @@ This crate provides a Rust implementation of several instantiations of the [Anem
 It features different instantiations per underlying field, and targets 128 bits security. Each instantiation has an even state size `N`, with a rate size of `N-1`, granted that the present instantiations all work on fields
 large enough to ensure 128 bits security with a capacity of a single field element.
 
+**WARNING:** This is an ongoing, prototype implementation subject to changes. In particular, it has not been audited and may contain bugs and security flaws. This implementation is NOT intended for production use.
+
+## Note on no-std usage
+
 * This implementation can be used in `no-std` environments by relying on the `alloc` crate instead. The use of the Rust standard library is activated by default through the `std` feature.
 
-**WARNING:** This is an ongoing, prototype implementation subject to changes. In particular, it has not been audited and may contain bugs and security flaws. This implementation is NOT intended for production use.
+## Fields and instantiations
 
 The currently supported fields are:
 
@@ -19,7 +23,7 @@ The currently supported fields are:
 * Pallas basefield (= Vesta scalar field)
 * Vesta basefield (= Pallas scalar field)
 
-For each of those fields, three instantiations of the Anemoi sponge construction are available:
+For each of those fields, six instantiations of the Anemoi sponge construction are available:
 
 * 1 column (2 cells) and rate 1
 * 2 columns (4 cells) and rate 3
@@ -37,16 +41,41 @@ hash functions including Anemoi over the BLS12-381 scalar field, one can have a 
 
 All instantiations including their test vectors have been generated from the official python reference implementation of Anemoi: [anemoi-hash/anemoi-hash](https://github.com/anemoi-hash/anemoi-hash).
 
+## Build
+
+To build the library with all available instantiations, simply run:
+
+```shell
+cargo build --release
+```
+
+## Testing
+
+To test all the different instantiations against deterministic test vectors generated from the official SAGEMATH implementation, simply run:
+
+```shell
+cargo test --all
+```
+
 ## Features
 
 By default, all instantiations are available, as well as the Rust standard library. To compile for a no-std environment like WASM, one can turn off the `std` feature
 by adding `--no-default-features` when compiling. This will require to manually specify which instantiation we want to access, with which security level. For instance,
-to use instances of Anemoi over the BLS12-381 base field without `std` with 128 bits security level, one could compile with
-`cargo build --no-default-features --features bls12_381`.
+to use instances of Anemoi over the BLS12-381 base field without `std` with 128 bits security level, one could compile with:
+
+```shell
+cargo build --release --no-default-features --features bls12_381
+```
+
 
 ## Performances
 
-In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with `RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta`:
+In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with:
+
+```shell
+RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta
+```
+
 
 ### 2-to-1 compression
 
