@@ -67,7 +67,7 @@ FRI-based protocols which do not require an algebraic group can benefit from muc
 
 As a comparison, the implementation of Anemoi-8-7 at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks"
 field can hash 10KB of data in `1.8249 ms`, i.e. about `24x` and `47x` faster than instantiations with similar internal state byte size,
-over Vesta and BLS12-377 base fields, respectively.Perhaps more interestingly, it achieves 2-to-1 compression in `3.9317 µs`, i.e. about
+over Vesta and BLS12-377 base fields, respectively. Perhaps more interestingly, it achieves 2-to-1 compression in `3.9317 µs`, i.e. about
 `33x` and `109x` faster than Vesta and BLS12-377 instantiations respectively.
 
 ## License
