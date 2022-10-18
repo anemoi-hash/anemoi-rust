@@ -19,15 +19,6 @@ pub struct AnemoiHash {
     idx: usize,
 }
 
-impl Default for AnemoiHash {
-    fn default() -> Self {
-        Self {
-            state: [Felt::zero(); STATE_WIDTH],
-            idx: 0,
-        }
-    }
-}
-
 impl Sponge<Felt> for AnemoiHash {
     type Digest = AnemoiDigest;
 
