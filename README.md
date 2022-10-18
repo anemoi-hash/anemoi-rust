@@ -32,8 +32,7 @@ For each of those fields, six instantiations of the Anemoi sponge construction a
 * 5 columns (10 cells) and rate 9
 * 6 columns (12 cells) and rate 11
 
-*NOTE*: Thanks to the particular design of the Jive compression mode for Anemoi in Merkle trees configuration, one can put digests both in the capacity and rate registers, where other algebraic hash functions like Rescue-Prime or Poseidon would require a larger number of cells to use their sponge mode as a 2-to-1 compression function to live the capacity section untouched. In addition, there is almost no overhead of using the Jive compression method with a
-higher compression factor, reducing the cost of hashing by increasing the Merkle tree arity.
+*NOTE*: Thanks to the particular design of the Jive compression mode for Anemoi in Merkle trees configuration, one can put digests both in the capacity and rate registers, where other algebraic hash functions like Rescue-Prime or Poseidon would require a larger number of cells to use their sponge mode as a 2-to-1 compression function to leave the capacity section untouched. In addition, there is almost no overhead of using the Jive compression method with a higher compression factor, reducing the cost of hashing by increasing the Merkle tree arity.
 
 *NOTE*: This implementation here is mostly for illustrative purposes. For a more aggressively optimized version of the Anemoi hash function (and comparison with other hash functions), over the 64 bits "Goldilocks" field
 p = 2<sup>64</sup> - 2<sup>32</sup> + 1, one can have a look at this repository: [Toposware/hash](https://github.com/toposware/hash/tree/anemoi). For a comparison of different algebraic
@@ -67,7 +66,6 @@ to use instances of Anemoi over the BLS12-381 base field without `std` with 128 
 cargo build --release --no-default-features --features bls12_381
 ```
 
-
 ## Performances
 
 In addition to be representable with a short set of constraints in a circuit, making it perfectly suitable for zero-knowledge proof applications, Anemoi native performances compete well with other algebraic hash functions. Below are running times for a security level of 128 bits obtained on an Intel i7-9750H CPU @ 2.60GHz with:
@@ -75,7 +73,6 @@ In addition to be representable with a short set of constraints in a circuit, ma
 ```shell
 RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta
 ```
-
 
 ### 2-to-1 compression
 
