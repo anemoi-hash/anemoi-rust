@@ -189,6 +189,7 @@ impl Jive<Felt> for AnemoiHash {
 mod tests {
     use super::super::BigInteger256;
     use super::*;
+    use ark_ff::to_bytes;
 
     #[test]
     fn test_anemoi_hash() {
@@ -427,6 +428,91 @@ mod tests {
 
         for (input, expected) in input_data.iter().zip(output_data) {
             assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
+        }
+    }
+
+    #[test]
+    fn test_anemoi_hash_bytes() {
+        // Generated from https://github.com/anemoi-hash/anemoi-hash/
+        let input_data = [
+            vec![Felt::zero(); 12],
+            vec![Felt::one(); 12],
+            vec![
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+            ],
+            vec![
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::one(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+                Felt::zero(),
+            ],
+        ];
+
+        let output_data = [
+            [Felt::new(BigInteger256([
+                0x0cb1efa6f7615257,
+                0xa35d6e51f7b616f5,
+                0x1a3a5c43d03d0a61,
+                0x05ccb568ac20e6ba,
+            ]))],
+            [Felt::new(BigInteger256([
+                0x843a4a4642d1d026,
+                0xa2d89f6e48b7d17f,
+                0xcb0a7e72892f7f9b,
+                0x291eb2534daf0af1,
+            ]))],
+            [Felt::new(BigInteger256([
+                0xd5cd3da4fdcaa5a9,
+                0x6112b0542ed28ea2,
+                0xa81ce7d22fa46196,
+                0x3331c0282586f6f5,
+            ]))],
+            [Felt::new(BigInteger256([
+                0xbb8a8a49e22418c4,
+                0x7293888878217348,
+                0x2a5f755652f631f9,
+                0x22930b543688f6d4,
+            ]))],
+        ];
+
+        // The inputs can all be represented with at least 1 byte less than the field size,
+        // hence computing the Anemoi hash digest from the byte sequence yields the same
+        // result as treating the inputs as field elements.
+        for (input, expected) in input_data.iter().zip(output_data) {
+            let mut bytes = [0u8; 372];
+            bytes[0..31].copy_from_slice(&to_bytes!(input[0]).unwrap()[0..31]);
+            bytes[31..62].copy_from_slice(&to_bytes!(input[1]).unwrap()[0..31]);
+            bytes[62..93].copy_from_slice(&to_bytes!(input[2]).unwrap()[0..31]);
+            bytes[93..124].copy_from_slice(&to_bytes!(input[3]).unwrap()[0..31]);
+            bytes[124..155].copy_from_slice(&to_bytes!(input[4]).unwrap()[0..31]);
+            bytes[155..186].copy_from_slice(&to_bytes!(input[5]).unwrap()[0..31]);
+            bytes[186..217].copy_from_slice(&to_bytes!(input[6]).unwrap()[0..31]);
+            bytes[217..248].copy_from_slice(&to_bytes!(input[7]).unwrap()[0..31]);
+            bytes[248..279].copy_from_slice(&to_bytes!(input[8]).unwrap()[0..31]);
+            bytes[279..310].copy_from_slice(&to_bytes!(input[9]).unwrap()[0..31]);
+            bytes[310..341].copy_from_slice(&to_bytes!(input[10]).unwrap()[0..31]);
+            bytes[341..372].copy_from_slice(&to_bytes!(input[11]).unwrap()[0..31]);
+
+            assert_eq!(expected, AnemoiHash::hash(&bytes).to_elements());
         }
     }
 

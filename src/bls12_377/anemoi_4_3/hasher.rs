@@ -193,6 +193,7 @@ mod tests {
 
     use super::super::BigInteger384;
     use super::*;
+    use ark_ff::to_bytes;
 
     #[test]
     fn test_anemoi_hash() {
@@ -467,6 +468,65 @@ mod tests {
 
         for (input, expected) in input_data.iter().zip(output_data) {
             assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
+        }
+    }
+
+    #[test]
+    fn test_anemoi_hash_bytes() {
+        // Generated from https://github.com/anemoi-hash/anemoi-hash/
+        let input_data = [
+            vec![Felt::zero(); 4],
+            vec![Felt::one(); 4],
+            vec![Felt::zero(), Felt::zero(), Felt::one(), Felt::one()],
+            vec![Felt::one(), Felt::one(), Felt::zero(), Felt::zero()],
+        ];
+
+        let output_data = [
+            [Felt::new(BigInteger384([
+                0x28c7cec2422cb4cf,
+                0xaa72d241f922abb4,
+                0x30f48e1c51b93f88,
+                0x504b1e2af978ac2f,
+                0x9cec476c49b9d6bc,
+                0x00e9f4fe3363c8a3,
+            ]))],
+            [Felt::new(BigInteger384([
+                0x3fa7492c2b251ff9,
+                0x528c9ca9a0fbb7dd,
+                0x7a202cf556148623,
+                0xa3c060de6297d717,
+                0xa6f6564cd920888d,
+                0x000f9e4965ac22d8,
+            ]))],
+            [Felt::new(BigInteger384([
+                0xf7b57d0bccd2c3ac,
+                0x0e338c8844219909,
+                0xaacdd1795f8f9476,
+                0x939178137b2e3bed,
+                0x72180c3c883b0758,
+                0x00979051afaff4c8,
+            ]))],
+            [Felt::new(BigInteger384([
+                0xebe2e811c9ca10ec,
+                0xce96949817f17377,
+                0x59121e8cd6cd94cb,
+                0xe56772f33e7649b2,
+                0xeb3ccd4be7e65c8a,
+                0x007288fdcdc966bf,
+            ]))],
+        ];
+
+        // The inputs can all be represented with at least 1 byte less than the field size,
+        // hence computing the Anemoi hash digest from the byte sequence yields the same
+        // result as treating the inputs as field elements.
+        for (input, expected) in input_data.iter().zip(output_data) {
+            let mut bytes = [0u8; 188];
+            bytes[0..47].copy_from_slice(&to_bytes!(input[0]).unwrap()[0..47]);
+            bytes[47..94].copy_from_slice(&to_bytes!(input[1]).unwrap()[0..47]);
+            bytes[94..141].copy_from_slice(&to_bytes!(input[2]).unwrap()[0..47]);
+            bytes[141..188].copy_from_slice(&to_bytes!(input[3]).unwrap()[0..47]);
+
+            assert_eq!(expected, AnemoiHash::hash(&bytes).to_elements());
         }
     }
 

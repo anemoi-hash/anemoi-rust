@@ -129,6 +129,8 @@ mod tests {
     use super::super::BigInteger256;
     use super::*;
 
+    use ark_ff::to_bytes;
+
     #[test]
     fn test_anemoi_hash() {
         // Generated from https://github.com/anemoi-hash/anemoi-hash/
@@ -340,6 +342,55 @@ mod tests {
 
         for (input, expected) in input_data.iter().zip(output_data) {
             assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
+        }
+    }
+
+    #[test]
+    fn test_anemoi_hash_bytes() {
+        // Generated from https://github.com/anemoi-hash/anemoi-hash/
+        let input_data = [
+            vec![Felt::zero(), Felt::zero()],
+            vec![Felt::one(), Felt::one()],
+            vec![Felt::zero(), Felt::one()],
+            vec![Felt::one(), Felt::zero()],
+        ];
+
+        let output_data = [
+            [Felt::new(BigInteger256([
+                0x51a17369bbb2bb27,
+                0xdb99850aab1227fd,
+                0xe4a70ba375235059,
+                0x3df72a23d7000352,
+            ]))],
+            [Felt::new(BigInteger256([
+                0xef880bcd36cf6eac,
+                0x2330e7e5b145ff12,
+                0x6c143e8b74b2b27f,
+                0x1710e6b1226869f7,
+            ]))],
+            [Felt::new(BigInteger256([
+                0xa522c557ac7a15d8,
+                0xc0c41e10b7ab14a1,
+                0xb24bf2ef6316b7ec,
+                0x2dd16238edc247e5,
+            ]))],
+            [Felt::new(BigInteger256([
+                0x12f72de93c0d8557,
+                0xc51f1613fa86f612,
+                0x38f32bcbd8d8f69d,
+                0x3113ac8172970b3c,
+            ]))],
+        ];
+
+        // The inputs can all be represented with at least 1 byte less than the field size,
+        // hence computing the Anemoi hash digest from the byte sequence yields the same
+        // result as treating the inputs as field elements.
+        for (input, expected) in input_data.iter().zip(output_data) {
+            let mut bytes = [0u8; 62];
+            bytes[0..31].copy_from_slice(&to_bytes!(input[0]).unwrap()[0..31]);
+            bytes[31..62].copy_from_slice(&to_bytes!(input[1]).unwrap()[0..31]);
+
+            assert_eq!(expected, AnemoiHash::hash(&bytes).to_elements());
         }
     }
 
