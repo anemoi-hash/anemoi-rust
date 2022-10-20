@@ -91,7 +91,7 @@ RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta
 As expected, the larger the underlying prime field on which we operate, the slower the hash operations get. Seen from the other angle,
 FRI-based protocols which do not require an algebraic group can benefit from much more efficient instantiations of Anemoi over smaller fields.
 
-As a comparison, the implementation of Anemoi-8-7 at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks"
+As a comparison, the implementation of Anemoi-8-4 at [Toposware/hash](https://github.com/toposware/hash/tree/anemoi) over the 64 bits "Goldilocks"
 field can hash 10KB of data in `1.8249 ms`, i.e. about `24x` and `47x` faster than instantiations with similar internal state byte size,
 over Vesta and BLS12-377 base fields, respectively. Perhaps more interestingly, it achieves 2-to-1 compression in `3.9317 µs`, i.e. about
 `33x` and `109x` faster than Vesta and BLS12-377 instantiations respectively.
