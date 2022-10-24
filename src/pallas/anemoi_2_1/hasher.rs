@@ -4,7 +4,7 @@
 use alloc::vec::Vec;
 
 use super::digest::AnemoiDigest;
-use super::{apply_permutation, DIGEST_SIZE, NUM_COLUMNS, STATE_WIDTH};
+use super::{apply_permutation, DIGEST_SIZE, STATE_WIDTH};
 use super::{Jive, Sponge};
 
 use super::Felt;
@@ -105,12 +105,7 @@ impl Jive<Felt> for AnemoiHash {
         let mut state = elems.try_into().unwrap();
         apply_permutation(&mut state);
 
-        let mut result = [Felt::zero(); NUM_COLUMNS];
-        for (i, r) in result.iter_mut().enumerate() {
-            *r = elems[i] + elems[i + NUM_COLUMNS] + state[i] + state[i + NUM_COLUMNS];
-        }
-
-        result.to_vec()
+        vec![state[0] + state[1] + elems[0] + elems[1]]
     }
 
     fn compress_k(elems: &[Felt], k: usize) -> Vec<Felt> {
