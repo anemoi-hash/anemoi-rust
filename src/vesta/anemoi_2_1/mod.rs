@@ -38,9 +38,9 @@ pub const NUM_HASH_ROUNDS: usize = 19;
 // HELPER FUNCTIONS
 // ================================================================================================
 
+/// Applies the Anemoi S-Box on the current
+/// hash state elements.
 #[inline(always)]
-/// Applies exponentiation of the current hash
-/// state elements with the Anemoi S-Box.
 pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
     let mut x: [Felt; NUM_COLUMNS] = state[..NUM_COLUMNS].try_into().unwrap();
     let mut y: [Felt; NUM_COLUMNS] = state[NUM_COLUMNS..].try_into().unwrap();
@@ -68,9 +68,9 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
     state[NUM_COLUMNS..].copy_from_slice(&y);
 }
 
-#[inline(always)]
 /// Applies matrix-vector multiplication of the current
 /// hash state with the Anemoi MDS matrix.
+#[inline(always)]
 pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
     state[0] += mul_by_generator(&state[1]);
     state[1] += mul_by_generator(&state[0]);
