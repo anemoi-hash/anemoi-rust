@@ -39,12 +39,14 @@ default = [
     "pallas",
     "vesta",
 ]
+
 std = [
     "ark-std/std",
     "ark-ff/std",
     "ark-ec/std",
     "rand_core/std"
 ]
+
 bls12_377 = ["ark-bls12-377/curve"]
 bls12_381 = ["ark-bls12-381/curve"]
 bn_254 = ["ark-bn254/curve"]
@@ -53,6 +55,7 @@ jubjub = ["ark-bls12-381/scalar_field"]
 pallas = ["ark-pallas/curve"]
 vesta = ["ark-pallas/scalar_field"]
 
+asm = ["ark-ff/asm"]
 
 [[bench]]
 name = "bls12_377"
