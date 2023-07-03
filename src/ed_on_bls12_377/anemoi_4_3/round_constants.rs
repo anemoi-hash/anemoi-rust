@@ -2,7 +2,8 @@
 
 use super::BigInteger256;
 use super::Felt;
-use super::{NUM_COLUMNS, NUM_HASH_ROUNDS};
+use super::NUM_COLUMNS;
+use super::NUM_HASH_ROUNDS;
 
 /// Additive round constants C for Anemoi.
 pub(crate) const C: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
@@ -160,7 +161,36 @@ pub(crate) const C: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
             0x0a841d54a5fc1775,
         ])),
     ],
+    [
+        Felt::new(BigInteger256([
+            0x0094ddf87b73c62e,
+            0x3b57d5da6184528d,
+            0x29c964eae02a0341,
+            0x1195c5cb1bb5e57c,
+        ])),
+        Felt::new(BigInteger256([
+            0x3f5deb32ee7bbfc8,
+            0xacba49b99f6ad216,
+            0x9de0976e818a3b93,
+            0x0d5dd122d5778533,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger256([
+            0x3aea95da21aad6b7,
+            0xb05d537cda9edf7a,
+            0x7c96f97b91ff07f2,
+            0x084cd270a8033917,
+        ])),
+        Felt::new(BigInteger256([
+            0xe5196d7f9bd4dcb1,
+            0x9ff7cf582163768e,
+            0x21caac51aa552b02,
+            0x0f2ffbf84feb006c,
+        ])),
+    ],
 ];
+
 /// Additive round constants D for Anemoi.
 pub(crate) const D: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
     [
@@ -315,6 +345,34 @@ pub(crate) const D: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
             0xec8fa5b295bb1087,
             0x32c7add97df5c14d,
             0x0babaff755bad3f0,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger256([
+            0xf9306160bb9162fa,
+            0x6ff472054edb827e,
+            0x5efd875b858c043d,
+            0x0bd2af30dd22ec33,
+        ])),
+        Felt::new(BigInteger256([
+            0x6e45e47278af97d0,
+            0xc5433935ed92cd9b,
+            0xee704c853cc02177,
+            0x0daad8456d46d078,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger256([
+            0x56903eb82dcff70b,
+            0x8d917e507232a489,
+            0xf8c19538899bd53f,
+            0x03c695341f2f4d94,
+        ])),
+        Felt::new(BigInteger256([
+            0x370b8c34f2103841,
+            0x61184d7d19c80731,
+            0xb950dab4b7c5dd37,
+            0x10b9dc789d795977,
         ])),
     ],
 ];

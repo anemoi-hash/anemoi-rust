@@ -2,7 +2,8 @@
 
 use super::BigInteger384;
 use super::Felt;
-use super::{NUM_COLUMNS, NUM_HASH_ROUNDS};
+use super::NUM_COLUMNS;
+use super::NUM_HASH_ROUNDS;
 
 /// Additive round constants C for Anemoi.
 pub(crate) const C: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
@@ -222,7 +223,44 @@ pub(crate) const C: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
             0x00b9c73d42463963,
         ])),
     ],
+    [
+        Felt::new(BigInteger384([
+            0xb237b6241e98fd7a,
+            0xe06c6ba5c27594c7,
+            0x225af546badeece5,
+            0x176c5348e4c5a69d,
+            0x523f96fe40dcd3f8,
+            0x00d7b20d91b0c999,
+        ])),
+        Felt::new(BigInteger384([
+            0x12a4e071d7320bed,
+            0x78416b8d8f00759e,
+            0xda786fbe42337a8c,
+            0xf2bfbc5d8c3635c6,
+            0xfd8eea844c309228,
+            0x00fc392436ceb239,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger384([
+            0xa5e84b6c8c6b0b72,
+            0xdc7d6f187bce5473,
+            0x4b3a5736c6c85a26,
+            0x7e17e458305be6fc,
+            0x9feb006f36ca65a3,
+            0x00cc8361a6a44396,
+        ])),
+        Felt::new(BigInteger384([
+            0xe4ca2c87e0c653cb,
+            0x8c8905097d5c18a1,
+            0x0e1759691d5baccb,
+            0x2a68a7bba070c9e3,
+            0x5975986ce4ada483,
+            0x008bcea25d147988,
+        ])),
+    ],
 ];
+
 /// Additive round constants D for Anemoi.
 pub(crate) const D: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
     [
@@ -439,6 +477,42 @@ pub(crate) const D: [[Felt; NUM_COLUMNS]; NUM_HASH_ROUNDS] = [
             0x18df0baeaff0aa94,
             0xa81d20fcef3acb77,
             0x00548e9082369e55,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger384([
+            0xa5caf7f4c5ed171a,
+            0xb485b6c50b1663fd,
+            0xda5b5979ee5f85fb,
+            0x39bfb9b1c48e0298,
+            0x2460de8347217842,
+            0x017443c9722c9b91,
+        ])),
+        Felt::new(BigInteger384([
+            0x0ddb6651c0f5bc83,
+            0x3956f6e3e21b6cf0,
+            0x81ff64d0092b1301,
+            0x74dab4d1a636d294,
+            0xe832c75a78c5d637,
+            0x00d4e11ae0afa638,
+        ])),
+    ],
+    [
+        Felt::new(BigInteger384([
+            0xd8aac18abddae532,
+            0x41e6d5042103257c,
+            0x0dcc358bf0e36844,
+            0x12a156ce806948e7,
+            0xfdd849142d54a719,
+            0x00ca4060350fa7b2,
+        ])),
+        Felt::new(BigInteger384([
+            0xa438a6b554a5c482,
+            0xf5fa08705d0b11c7,
+            0xdf232acc94f70247,
+            0x38dc86302bab802e,
+            0x96207c236e29cef8,
+            0x0173dc21ccaa1096,
         ])),
     ],
 ];

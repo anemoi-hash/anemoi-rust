@@ -9,8 +9,7 @@ use unroll::unroll_for_loops;
 mod digest;
 /// Sponge for Anemoi
 mod hasher;
-/// MDS matrix for Anemoi
-mod mds;
+
 /// Round constants for Anemoi
 mod round_constants;
 
@@ -32,8 +31,8 @@ pub const NUM_COLUMNS: usize = 1;
 /// One element (32-bytes) is returned as digest.
 pub const DIGEST_SIZE: usize = RATE_WIDTH;
 
-/// The number of rounds is set to 18 to provide 128-bit security level.
-pub const NUM_HASH_ROUNDS: usize = 18;
+/// The number of rounds is set to 19 to provide 128-bit security level.
+pub const NUM_HASH_ROUNDS: usize = 19;
 
 // HELPER FUNCTIONS
 // ================================================================================================
@@ -41,7 +40,7 @@ pub const NUM_HASH_ROUNDS: usize = 18;
 /// Applies the Anemoi S-Box on the current
 /// hash state elements.
 #[inline(always)]
-pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
+pub(crate) fn apply_sbox_layer(state: &mut [Felt; STATE_WIDTH]) {
     let mut x: [Felt; NUM_COLUMNS] = state[..NUM_COLUMNS].try_into().unwrap();
     let mut y: [Felt; NUM_COLUMNS] = state[NUM_COLUMNS..].try_into().unwrap();
 
@@ -71,9 +70,9 @@ pub(crate) fn apply_sbox(state: &mut [Felt; STATE_WIDTH]) {
 /// Applies matrix-vector multiplication of the current
 /// hash state with the Anemoi MDS matrix.
 #[inline(always)]
-pub(crate) fn apply_mds(state: &mut [Felt; STATE_WIDTH]) {
-    state[0] += mul_by_generator(&state[1]);
-    state[1] += mul_by_generator(&state[0]);
+pub(crate) fn apply_linear_layer(state: &mut [Felt; STATE_WIDTH]) {
+    state[1] += state[0];
+    state[0] += state[1];
 }
 
 // ANEMOI PERMUTATION
@@ -87,7 +86,7 @@ pub(crate) fn apply_permutation(state: &mut [Felt; STATE_WIDTH]) {
         apply_round(state, i);
     }
 
-    apply_mds(state)
+    apply_linear_layer(state)
 }
 
 /// Applies an Anemoi round to the provided state
@@ -97,24 +96,13 @@ pub(crate) fn apply_round(state: &mut [Felt; STATE_WIDTH], step: usize) {
     state[0] += round_constants::C[step % NUM_HASH_ROUNDS];
     state[1] += round_constants::D[step % NUM_HASH_ROUNDS];
 
-    apply_mds(state);
-    apply_sbox(state);
+    apply_linear_layer(state);
+    apply_sbox_layer(state);
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn apply_naive_mds(state: &mut [Felt; STATE_WIDTH]) {
-        let mut result = [Felt::zero(); STATE_WIDTH];
-        for (i, r) in result.iter_mut().enumerate().take(STATE_WIDTH) {
-            for (j, s) in state.iter().enumerate().take(STATE_WIDTH) {
-                *r += mds::MDS[i * STATE_WIDTH + j] * *s;
-            }
-        }
-
-        state.copy_from_slice(&result);
-    }
 
     #[test]
     fn test_sbox() {
@@ -349,245 +337,11 @@ mod tests {
         ];
 
         for i in input.iter_mut() {
-            apply_sbox(i);
+            apply_sbox_layer(i);
         }
 
         for (&i, o) in input.iter().zip(output) {
             assert_eq!(i, o);
-        }
-    }
-
-    #[test]
-    fn test_mds() {
-        // Generated from https://github.com/anemoi-hash/anemoi-hash/
-        let mut input = [
-            [Felt::zero(), Felt::zero()],
-            [Felt::one(), Felt::one()],
-            [Felt::zero(), Felt::one()],
-            [Felt::one(), Felt::zero()],
-            [
-                Felt::new(BigInteger256([
-                    0xf8ad709e68c2dabf,
-                    0xa1b5dbdb51c1aa2b,
-                    0x2b448406c4624c79,
-                    0x08bfb020d8b9a8e4,
-                ])),
-                Felt::new(BigInteger256([
-                    0x9b1aebca216d0ed4,
-                    0x75d85b97a449d9c4,
-                    0x4253cf99807a0e3a,
-                    0x10bb8ac733ea0ecf,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x22373c9cf921467d,
-                    0x295505fef66f4798,
-                    0xbf7c701d8dc1265f,
-                    0x047e8e2ea1f76e07,
-                ])),
-                Felt::new(BigInteger256([
-                    0xd48c08371c757a5f,
-                    0x766f474af6563bc3,
-                    0xee27c7c34aae40aa,
-                    0x0394eacc79d440c7,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x9af92643672ff26d,
-                    0xdca9a3844e34d859,
-                    0xcd17cf642248b34e,
-                    0x0ddf76e710b423ea,
-                ])),
-                Felt::new(BigInteger256([
-                    0x290f707147c6e44c,
-                    0xb2af83343c4afeed,
-                    0x6a8d2c9c2490c318,
-                    0x0acbf62c6bb360bf,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x62e758b689e98371,
-                    0x41e2e60ad8c6a6d8,
-                    0x4910de00950d0afa,
-                    0x099ed572389cc6c0,
-                ])),
-                Felt::new(BigInteger256([
-                    0xcff27ce92a33f3f0,
-                    0x9e2578d49fd2de44,
-                    0x424aa71c14977f94,
-                    0x053d6d1e992dfeeb,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0xd7cb0cd40f6c44d7,
-                    0x1548b0ea71ddad82,
-                    0xd7aceb19c84ba7e4,
-                    0x0269ef2840e2d9b2,
-                ])),
-                Felt::new(BigInteger256([
-                    0x7fffbdf9249d91f5,
-                    0x7520833986945b43,
-                    0xcd7907d8a76d55bf,
-                    0x0bc0fd7b36454b3f,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0xfdfd98ce8a9f23ec,
-                    0xa16f054120c0cae6,
-                    0xaac144f4534b5f9b,
-                    0x09cedfb69cb083aa,
-                ])),
-                Felt::new(BigInteger256([
-                    0x50ad10204986b84d,
-                    0xa623c68e167dd6b0,
-                    0x6a10453ebc744861,
-                    0x0772e3f9cc5db960,
-                ])),
-            ],
-        ];
-
-        let mut input2 = input;
-
-        let output = [
-            [Felt::zero(), Felt::zero()],
-            [
-                Felt::new(BigInteger256([
-                    0x9c777ffffffffec5,
-                    0xab3f94760ffffeb8,
-                    0x02251ba4877a6e56,
-                    0x071a44984b108eb7,
-                ])),
-                Felt::new(BigInteger256([
-                    0x94c3ffffffffe4d8,
-                    0x02d0883f7fffe3c6,
-                    0xdfb1bf87b7bc5b55,
-                    0x01872ef533960e4d,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x296c7ffffffffed3,
-                    0x929216656ffffec7,
-                    0x4c01534d92860e69,
-                    0x0c79cfc4b9819970,
-                ])),
-                Felt::new(BigInteger256([
-                    0x7568ffffffffe606,
-                    0xc9e8e8d8dfffe500,
-                    0xf464b958816dfcec,
-                    0x07b8c48f14411a33,
-                ])),
-            ],
-            [
-                Felt::one(),
-                Felt::new(BigInteger256([
-                    0x296c7ffffffffed3,
-                    0x929216656ffffec7,
-                    0x4c01534d92860e69,
-                    0x0c79cfc4b9819970,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x839fb3fd482220e3,
-                    0xc0fc6efb301a60fc,
-                    0x506254d89a85c564,
-                    0x0379b1db435a03f4,
-                ])),
-                Felt::new(BigInteger256([
-                    0xc28e638e545be252,
-                    0xa4e00932868e2f73,
-                    0xa7f5e5bd571a44dd,
-                    0x12833e2494f3d074,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x3df9f1596b39caa3,
-                    0xf03b4a74e1d86a68,
-                    0xb416666c87dbf4ff,
-                    0x089d2646b18269dc,
-                ])),
-                Felt::new(BigInteger256([
-                    0xc357c5e6536ce457,
-                    0x9adf07623eef60ae,
-                    0xa10991e75d686e9b,
-                    0x06643f2db54ae45f,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x9f694fff924790e8,
-                    0xaa16df10eca6c0ad,
-                    0x0c11ba4497e5875c,
-                    0x08b278ea7dda0efb,
-                ])),
-                Felt::new(BigInteger256([
-                    0x776d5067d9ed5832,
-                    0xcffe08b4729f8dce,
-                    0xad082b51981d8501,
-                    0x0f7064a136b234f2,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x055514c02a607a0b,
-                    0xbf1c7e57b4e5c0bc,
-                    0xb7416bb430c3e1b7,
-                    0x0ce1d5dbc584cef1,
-                ])),
-                Felt::new(BigInteger256([
-                    0xae3bc56cce7e70d3,
-                    0xc99b5b6ffb916e5d,
-                    0x575963d0de29954a,
-                    0x089add7689fa17a1,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x54e1e03d34f6cfd8,
-                    0x986beceb729d8542,
-                    0x96ebad2d7cdd1646,
-                    0x124b91f11692ebcb,
-                ])),
-                Felt::new(BigInteger256([
-                    0xede8033bb1d36e6f,
-                    0xd9c0a58f801dcedf,
-                    0x763b492575a41fb2,
-                    0x0384d211e70f5952,
-                ])),
-            ],
-            [
-                Felt::new(BigInteger256([
-                    0x923f7b94dc32fa81,
-                    0xc183e681bf913e04,
-                    0x61d08247475467f3,
-                    0x05a7e6dac12ca1ea,
-                ])),
-                Felt::new(BigInteger256([
-                    0x9ba72eeb35e83f5c,
-                    0xd3d054bcdcf92b0d,
-                    0x2d0d5b8a582f674a,
-                    0x0130f5302efb1e28,
-                ])),
-            ],
-        ];
-
-        for i in input.iter_mut() {
-            apply_mds(i);
-        }
-        for i in input2.iter_mut() {
-            apply_naive_mds(i);
-        }
-
-        for (index, (&i_1, i_2)) in input.iter().zip(input2).enumerate() {
-            assert_eq!(output[index], i_1);
-            assert_eq!(output[index], i_2);
         }
     }
 }

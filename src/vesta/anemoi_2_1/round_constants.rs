@@ -120,6 +120,18 @@ pub(crate) const C: [Felt; NUM_HASH_ROUNDS] = [
         0x1075c7e44e0fed20,
         0x1b47985d6a922230,
     ])),
+    Felt::new(BigInteger256([
+        0x093a657f5542d952,
+        0x5de38d80f00d36cd,
+        0x2164c901c12f9601,
+        0x13da131feb5c319e,
+    ])),
+    Felt::new(BigInteger256([
+        0x6bbbb6567b66dc7f,
+        0xe66b175570aa0854,
+        0x5d99493b97681059,
+        0x0b8b999a6170973e,
+    ])),
 ];
 
 /// Additive round constants D for Anemoi.
@@ -237,5 +249,17 @@ pub(crate) const D: [Felt; NUM_HASH_ROUNDS] = [
         0x4c73ee292ec8b1c7,
         0x8fb678d0e163a00c,
         0x219d2f5520a30535,
+    ])),
+    Felt::new(BigInteger256([
+        0xfbd5e184cc985cf1,
+        0x6c8e914257c00ee3,
+        0x0b600c92b07821a5,
+        0x2ca003aef067697c,
+    ])),
+    Felt::new(BigInteger256([
+        0x0a2c576ba121d475,
+        0xa667ac500c8538c1,
+        0x900272a3629a8518,
+        0x1fb3edef6b2ece84,
     ])),
 ];
