@@ -12,22 +12,6 @@ pub mod anemoi_2_1;
 /// rate 3 aimed at providing 128 bits security.
 pub mod anemoi_4_3;
 
-/// An instantiation of Anemoi with state width 6 and
-/// rate 5 aimed at providing 128 bits security.
-pub mod anemoi_6_5;
-
-/// An instantiation of Anemoi with state width 8 and
-/// rate 7 aimed at providing 128 bits security.
-pub mod anemoi_8_7;
-
-/// An instantiation of Anemoi with state width 10 and
-/// rate 9 aimed at providing 128 bits security.
-pub mod anemoi_10_9;
-
-/// An instantiation of Anemoi with state width 12 and
-/// rate 11 aimed at providing 128 bits security.
-pub mod anemoi_12_11;
-
 // HELPER FUNCTION
 // ================================================================================================
 

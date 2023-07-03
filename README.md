@@ -23,14 +23,10 @@ The currently supported fields are:
 * Pallas basefield (= Vesta scalar field)
 * Vesta basefield (= Pallas scalar field)
 
-For each of those fields, six instantiations of the Anemoi sponge construction are available:
+For each of those fields, two instantiations of the Anemoi sponge construction are available:
 
 * 1 column (2 cells) and rate 1
 * 2 columns (4 cells) and rate 3
-* 3 columns (6 cells) and rate 5
-* 4 columns (8 cells) and rate 7
-* 5 columns (10 cells) and rate 9
-* 6 columns (12 cells) and rate 11
 
 *NOTE*: Thanks to the particular design of the Jive compression mode for Anemoi in Merkle trees configuration, one can put digests both in the capacity and rate registers, where other algebraic hash functions like Rescue-Prime or Poseidon would require a larger number of cells to use their sponge mode as a 2-to-1 compression function to leave the capacity section untouched. In addition, there is almost no overhead of using the Jive compression method with a higher compression factor, reducing the cost of hashing by increasing the Merkle tree arity.
 
@@ -76,17 +72,17 @@ RUSTFLAGS="-C target-cpu=native" cargo bench --bench bls12_377 --bench vesta
 
 ### 2-to-1 compression
 
-| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 | Anemoi-6-5 | Anemoi-8-7 | Anemoi-10-9 | Anemoi-12-11 |
-| ----------- | ----------- | ----------- | -------------- | ------------ | ------------ | ------------ |
-| BLS12-377 | 429.61 µs | 485.99 µs | 610.08 µs | 815.19 µs | 1.0179 ms | 1.2245 ms |
-| Vesta | 129.48 µs | 176.58 µs | 243.45 µs | 292.13 µs | 406.56 µs | 440.80 µs |
+| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 |
+| ----------- | ----------- | ----------- |
+| BLS12-377 | 429.61 µs | 485.99 µs |
+| Vesta | 129.48 µs | 176.58 µs |
 
 ### 10KB data hashing
 
-| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 | Anemoi-6-5 | Anemoi-8-7 | Anemoi-10-9 | Anemoi-12-11 |
-| ----------- | ----------- | ----------- | -------------- | ---------- | ------------ | ------------ |
-| BLS12-377 | 85.369 ms | 35.937 ms | 30.141 ms | 28.519 ms | 26.151 ms | 24.766 ms |
-| Vesta | 44.448 ms | 20.307 ms | 15.042 ms | 14.361 ms | 15.414 ms | 13.987 ms |
+| Field \ Instantiation | Anemoi-2-1 | Anemoi-4-3 |
+| ----------- | ----------- | ----------- |
+| BLS12-377 | 85.369 ms | 35.937 ms |
+| Vesta | 44.448 ms | 20.307 ms |
 
 As expected, the larger the underlying prime field on which we operate, the slower the hash operations get. Seen from the other angle,
 FRI-based protocols which do not require an algebraic group can benefit from much more efficient instantiations of Anemoi over smaller fields.
