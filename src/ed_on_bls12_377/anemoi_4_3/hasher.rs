@@ -4,22 +4,16 @@
 use alloc::vec::Vec;
 
 use super::digest::AnemoiDigest;
-use super::{apply_permutation, DIGEST_SIZE, NUM_COLUMNS, RATE_WIDTH, STATE_WIDTH};
-use super::{Jive, Sponge};
+use super::{AnemoiEdOnBls12_377_4_3, Jive, Sponge};
+use super::{DIGEST_SIZE, NUM_COLUMNS, RATE_WIDTH, STATE_WIDTH};
+use crate::traits::Anemoi;
 
 use super::Felt;
 use super::{One, Zero};
 
 use ark_ff::FromBytes;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-/// An Anemoi hash instantiation
-pub struct AnemoiHash {
-    state: [Felt; STATE_WIDTH],
-    idx: usize,
-}
-
-impl Sponge<Felt> for AnemoiHash {
+impl Sponge<Felt> for AnemoiEdOnBls12_377_4_3 {
     type Digest = AnemoiDigest;
 
     fn hash(bytes: &[u8]) -> Self::Digest {
@@ -71,7 +65,7 @@ impl Sponge<Felt> for AnemoiHash {
             state[i] += Felt::read(&buf[..]).unwrap();
             i += 1;
             if i % RATE_WIDTH == 0 {
-                apply_permutation(&mut state);
+                AnemoiEdOnBls12_377_4_3::permutation(&mut state);
                 i = 0;
                 num_hashed += RATE_WIDTH;
             }
@@ -87,7 +81,7 @@ impl Sponge<Felt> for AnemoiHash {
         // to the whole state.
         if sigma.is_zero() {
             state[i] += Felt::one();
-            apply_permutation(&mut state);
+            AnemoiEdOnBls12_377_4_3::permutation(&mut state);
         }
 
         // Squeezing phase
@@ -111,7 +105,7 @@ impl Sponge<Felt> for AnemoiHash {
             state[i] += element;
             i += 1;
             if i % RATE_WIDTH == 0 {
-                apply_permutation(&mut state);
+                AnemoiEdOnBls12_377_4_3::permutation(&mut state);
                 i = 0;
             }
         }
@@ -126,7 +120,7 @@ impl Sponge<Felt> for AnemoiHash {
         // to the whole state.
         if sigma.is_zero() {
             state[i] += Felt::one();
-            apply_permutation(&mut state);
+            AnemoiEdOnBls12_377_4_3::permutation(&mut state);
         }
 
         // Squeezing phase
@@ -144,18 +138,18 @@ impl Sponge<Felt> for AnemoiHash {
         state[DIGEST_SIZE..2 * DIGEST_SIZE].copy_from_slice(digests[0].as_elements());
 
         // Apply internal Anemoi permutation
-        apply_permutation(&mut state);
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
     }
 }
 
-impl Jive<Felt> for AnemoiHash {
+impl Jive<Felt> for AnemoiEdOnBls12_377_4_3 {
     fn compress(elems: &[Felt]) -> Vec<Felt> {
         assert!(elems.len() == STATE_WIDTH);
 
         let mut state = elems.try_into().unwrap();
-        apply_permutation(&mut state);
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         let mut result = [Felt::zero(); NUM_COLUMNS];
         for (i, r) in result.iter_mut().enumerate() {
@@ -171,7 +165,7 @@ impl Jive<Felt> for AnemoiHash {
         assert!(k % 2 == 0);
 
         let mut state = elems.try_into().unwrap();
-        apply_permutation(&mut state);
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         let mut result = vec![Felt::zero(); STATE_WIDTH / k];
         let c = result.len();
@@ -405,7 +399,10 @@ mod tests {
 
         for (index, (input, expected)) in input_data.iter().zip(output_data).enumerate() {
             println!("{:?}", index);
-            assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
+            assert_eq!(
+                expected,
+                AnemoiEdOnBls12_377_4_3::hash_field(input).to_elements()
+            );
         }
     }
 
@@ -455,7 +452,10 @@ mod tests {
             bytes[31..62].copy_from_slice(&to_bytes!(input[1]).unwrap()[0..31]);
             bytes[62..93].copy_from_slice(&to_bytes!(input[2]).unwrap()[0..31]);
             bytes[93..124].copy_from_slice(&to_bytes!(input[3]).unwrap()[0..31]);
-            assert_eq!(expected, AnemoiHash::hash(&bytes).to_elements());
+            assert_eq!(
+                expected,
+                AnemoiEdOnBls12_377_4_3::hash(&bytes).to_elements()
+            );
         }
     }
 
@@ -529,11 +529,14 @@ mod tests {
         ];
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress(input));
+            assert_eq!(expected.to_vec(), AnemoiEdOnBls12_377_4_3::compress(input));
         }
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 2));
+            assert_eq!(
+                expected.to_vec(),
+                AnemoiEdOnBls12_377_4_3::compress_k(input, 2)
+            );
         }
 
         let input_data = [
@@ -571,7 +574,10 @@ mod tests {
         ];
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 4));
+            assert_eq!(
+                expected.to_vec(),
+                AnemoiEdOnBls12_377_4_3::compress_k(input, 4)
+            );
         }
     }
 }

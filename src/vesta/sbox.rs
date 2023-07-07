@@ -9,12 +9,12 @@ pub(crate) const ALPHA: u32 = 5;
 
 #[allow(unused)]
 /// Inverse exponent
-pub(crate) const INV_ALPHA: [u64; 4] = [
+pub(crate) const INV_ALPHA: Felt = Felt::new(BigInteger256([
     0xd69f2280cccccccd,
     0x4e9ee0c9a143ba4a,
     0x3333333333333333,
     0x3333333333333333,
-];
+]));
 
 /// Multiplier of the Anemoi S-Box
 #[allow(unused)]
@@ -33,7 +33,7 @@ pub(crate) const DELTA: Felt = Felt::new(BigInteger256([
 pub(crate) const QUAD: u32 = 2;
 
 #[inline(always)]
-pub(crate) fn exp_inv_alpha(x: &Felt) -> Felt {
+pub(crate) fn exp_by_inv_alpha(x: &Felt) -> Felt {
     let t2 = x.square(); //       1: 2
     let t0 = t2 * x; //           2: 3
     let t1 = t2.square(); //      3: 4
@@ -338,7 +338,7 @@ mod tests {
     fn test_alpha() {
         let mut a = -Felt::one();
         for _ in 0..100 {
-            assert_eq!(exp_inv_alpha(&a), a.pow(INV_ALPHA));
+            assert_eq!(exp_by_inv_alpha(&a), a.pow(INV_ALPHA.0));
             a += a;
         }
     }

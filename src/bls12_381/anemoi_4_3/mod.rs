@@ -1,20 +1,16 @@
 //! Implementation of the Anemoi permutation
 
-use super::{mul_by_generator, sbox, BigInteger384, Felt};
-use crate::{Jive, Sponge};
-use ark_ff::{Field, One, Zero};
-use unroll::unroll_for_loops;
-
+use super::{sbox, BigInteger384, Felt};
+use crate::{Anemoi, Jive, Sponge};
+use ark_ff::{One, Zero};
 /// Digest for Anemoi
 mod digest;
 /// Sponge for Anemoi
 mod hasher;
-
 /// Round constants for Anemoi
 mod round_constants;
 
 pub use digest::AnemoiDigest;
-pub use hasher::AnemoiHash;
 
 // ANEMOI CONSTANTS
 // ================================================================================================
@@ -34,87 +30,34 @@ pub const DIGEST_SIZE: usize = 1;
 /// The number of rounds is set to 14 to provide 128-bit security level.
 pub const NUM_HASH_ROUNDS: usize = 14;
 
-// HELPER FUNCTIONS
+// ANEMOI INSTANTIATION
 // ================================================================================================
 
-/// Applies the Anemoi S-Box on the current
-/// hash state elements.
-#[inline(always)]
-pub(crate) fn apply_sbox_layer(state: &mut [Felt; STATE_WIDTH]) {
-    let mut x: [Felt; NUM_COLUMNS] = state[..NUM_COLUMNS].try_into().unwrap();
-    let mut y: [Felt; NUM_COLUMNS] = state[NUM_COLUMNS..].try_into().unwrap();
+/// An Anemoi instantiation over BLS12_381 basefield with 2 columns and rate 3.
+#[derive(Debug, Clone)]
+pub struct AnemoiBls12_381_4_3;
 
-    x.iter_mut().enumerate().for_each(|(i, t)| {
-        let y2 = y[i].square();
-        *t -= mul_by_generator(&y2);
-    });
+impl<'a> Anemoi<'a, Felt> for AnemoiBls12_381_4_3 {
+    const NUM_COLUMNS: usize = NUM_COLUMNS;
+    const NUM_ROUNDS: usize = NUM_HASH_ROUNDS;
 
-    let mut x_alpha_inv = x;
-    x_alpha_inv
-        .iter_mut()
-        .for_each(|t| *t = sbox::exp_inv_alpha(t));
+    const WIDTH: usize = STATE_WIDTH;
+    const RATE: usize = RATE_WIDTH;
+    const OUTPUT_SIZE: usize = DIGEST_SIZE;
 
-    y.iter_mut()
-        .enumerate()
-        .for_each(|(i, t)| *t -= x_alpha_inv[i]);
+    const ARK_C: &'a [Felt] = &round_constants::C;
+    const ARK_D: &'a [Felt] = &round_constants::D;
 
-    x.iter_mut().enumerate().for_each(|(i, t)| {
-        let y2 = y[i].square();
-        *t += mul_by_generator(&y2) + sbox::DELTA;
-    });
+    const GROUP_GENERATOR: u32 = sbox::BETA;
 
-    state[..NUM_COLUMNS].copy_from_slice(&x);
-    state[NUM_COLUMNS..].copy_from_slice(&y);
-}
+    const ALPHA: u32 = sbox::ALPHA;
+    const INV_ALPHA: Felt = sbox::INV_ALPHA;
+    const BETA: u32 = sbox::BETA;
+    const DELTA: Felt = sbox::DELTA;
 
-/// Applies matrix-vector multiplication of the current
-/// hash state with the Anemoi MDS matrix.
-#[inline(always)]
-pub(crate) fn apply_linear_layer(state: &mut [Felt; STATE_WIDTH]) {
-    state[0] += mul_by_generator(&state[1]);
-    state[1] += mul_by_generator(&state[0]);
-
-    state[3] += mul_by_generator(&state[2]);
-    state[2] += mul_by_generator(&state[3]);
-    state.swap(2, 3);
-
-    // PHT layer
-    state[2] += state[0];
-    state[3] += state[1];
-
-    state[0] += state[2];
-    state[1] += state[3];
-}
-
-// ANEMOI PERMUTATION
-// ================================================================================================
-
-/// Applies an Anemoi permutation to the provided state
-#[inline(always)]
-#[unroll_for_loops]
-pub(crate) fn apply_permutation(state: &mut [Felt; STATE_WIDTH]) {
-    for i in 0..NUM_HASH_ROUNDS {
-        apply_round(state, i);
+    fn exp_by_inv_alpha(x: Felt) -> Felt {
+        sbox::exp_by_inv_alpha(&x)
     }
-
-    apply_linear_layer(state)
-}
-
-/// Applies an Anemoi round to the provided state
-#[inline(always)]
-#[unroll_for_loops]
-pub(crate) fn apply_round(state: &mut [Felt; STATE_WIDTH], step: usize) {
-    // determine which round constants to use
-    let c = &round_constants::C[step % NUM_HASH_ROUNDS];
-    let d = &round_constants::D[step % NUM_HASH_ROUNDS];
-
-    for i in 0..NUM_COLUMNS {
-        state[i] += c[i];
-        state[NUM_COLUMNS + i] += d[i];
-    }
-
-    apply_linear_layer(state);
-    apply_sbox_layer(state);
 }
 
 #[cfg(test)]
@@ -665,7 +608,7 @@ mod tests {
         ];
 
         for i in input.iter_mut() {
-            apply_sbox_layer(i);
+            AnemoiBls12_381_4_3::sbox_layer(i);
         }
 
         for (&i, o) in input.iter().zip(output) {

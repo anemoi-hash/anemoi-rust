@@ -3,24 +3,21 @@ use super::Felt;
 
 use ark_ff::Field;
 
-#[allow(unused)]
 /// Exponent of the Anemoi S-Box
 pub(crate) const ALPHA: u32 = 5;
 
-#[allow(unused)]
 /// Inverse exponent
 ///
-pub(crate) const INV_ALPHA: [u64; 6] = [
+pub(crate) const INV_ALPHA: Felt = Felt::new(BigInteger384([
     0xd0d3cccccccccccd,
     0x126f7dd026666666,
     0x18c2b4f2fb3aa000,
     0x7b4f14c2672a760c,
     0x04fc0499f0810762,
     0x01582e9e796a73ef,
-];
+]));
 
 /// Multiplier of the Anemoi S-Box
-#[allow(unused)]
 pub(crate) const BETA: u32 = 15;
 
 /// First added constant of the Anemoi S-Box
@@ -38,7 +35,7 @@ pub(crate) const DELTA: Felt = Felt::new(BigInteger384([
 pub(crate) const QUAD: u32 = 2;
 
 #[inline(always)]
-pub(crate) fn exp_inv_alpha(x: &Felt) -> Felt {
+pub(crate) fn exp_by_inv_alpha(x: &Felt) -> Felt {
     let t22 = x.square(); //    1: 2
     let t16 = t22 * x; //       2: 3
     let t20 = t22.square(); //  3: 4
@@ -498,7 +495,7 @@ mod tests {
     fn test_alpha() {
         let mut a = -Felt::one();
         for _ in 0..100 {
-            assert_eq!(exp_inv_alpha(&a), a.pow(INV_ALPHA));
+            assert_eq!(exp_by_inv_alpha(&a), a.pow(INV_ALPHA.0));
             a += a;
         }
     }
