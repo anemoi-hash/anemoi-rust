@@ -1,8 +1,6 @@
 name: CI
 on:
   push:
-    branches:
-      - main
   pull_request:
     types: [opened, repoened, synchronize]
 
@@ -13,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [stable]
+        toolchain: [nightly]
         os: [ubuntu]
     steps:
       - uses: actions/checkout@main
@@ -72,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [stable]
+        toolchain: [nightly]
         target:
           - wasm32-unknown-unknown
     steps:
