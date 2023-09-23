@@ -1,4 +1,4 @@
-pub use ark_ff::BigInteger256;
+pub use ark_ff::MontFp;
 
 pub use ark_pallas::Fq as Felt;
 

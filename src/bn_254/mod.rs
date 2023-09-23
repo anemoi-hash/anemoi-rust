@@ -1,5 +1,5 @@
 pub use ark_bn254::Fq as Felt;
-pub use ark_ff::BigInteger256;
+pub use ark_ff::MontFp;
 
 mod sbox;
 

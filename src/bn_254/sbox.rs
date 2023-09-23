@@ -1,5 +1,5 @@
-use super::BigInteger256;
 use super::Felt;
+use super::MontFp;
 
 use ark_ff::Field;
 
@@ -9,24 +9,16 @@ pub(crate) const ALPHA: u32 = 5;
 
 #[allow(unused)]
 /// Inverse exponent
-pub(crate) const INV_ALPHA: Felt = Felt::new(BigInteger256([
-    0x180d04d5f031fee9,
-    0xd633c43a29c71dd2,
-    0x49b9b57c33cd568b,
-    0x135b52945a13d9aa,
-]));
+pub(crate) const INV_ALPHA: Felt =
+    MontFp!("8755297148735710088898562298102910035478524462919129465075615157858090483433");
 
 /// Multiplier of the Anemoi S-Box
 #[allow(unused)]
 pub(crate) const BETA: u32 = 3;
 
 /// First added constant of the Anemoi S-Box
-pub(crate) const DELTA: Felt = Felt::new(BigInteger256([
-    0xafd49a8c34aeae4c,
-    0xe0a8c73e1f684743,
-    0xb4ea4db753538a2d,
-    0x14cf9766d3bdd51d,
-]));
+pub(crate) const DELTA: Felt =
+    MontFp!("14592161914559516814830937163504850059130874104865215775126025263096817472389");
 
 #[allow(unused)]
 /// Second added constant of the Anemoi S-Box
@@ -345,12 +337,13 @@ pub(crate) fn exp_by_inv_alpha(x: &Felt) -> Felt {
 mod tests {
     use super::*;
     use ark_ff::One;
+    use ark_ff::PrimeField;
 
     #[test]
     fn test_alpha() {
         let mut a = -Felt::one();
         for _ in 0..100 {
-            assert_eq!(exp_by_inv_alpha(&a), a.pow(INV_ALPHA.0));
+            assert_eq!(exp_by_inv_alpha(&a), a.pow(INV_ALPHA.into_bigint()));
             a += a;
         }
     }
