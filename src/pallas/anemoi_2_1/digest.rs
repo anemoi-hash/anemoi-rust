@@ -40,9 +40,9 @@ impl AnemoiDigest {
 
     /// Returns an array of bytes corresponding to the digest
     pub fn to_bytes(&self) -> [u8; 32] {
-        let mut bytes = Vec::new();
-        self.0[0].serialize_compressed(&mut bytes).unwrap();
-        bytes.try_into().unwrap()
+        let mut bytes = [0u8; 32];
+        self.0[0].serialize_compressed(&mut bytes[..]).unwrap();
+        bytes
     }
 }
 
