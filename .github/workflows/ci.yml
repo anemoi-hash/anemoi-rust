@@ -24,7 +24,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --release --all-targets
+          args: --all-targets
 
   clippy:
     name: Clippy
