@@ -110,7 +110,8 @@ pub trait Anemoi<'a, F: Field> {
     /// Additive Round Constants (ARK) layer.
     #[inline(always)]
     #[unroll_for_loops]
-    fn ark_layer(state: &mut [F; Self::WIDTH], round_ctr: usize) {
+    fn ark_layer(state: &mut [F], round_ctr: usize) {
+        debug_assert!(state.len() == Self::WIDTH);
         assert!(round_ctr < Self::NUM_ROUNDS);
         let range = round_ctr * Self::NUM_COLUMNS..(round_ctr + 1) * Self::NUM_COLUMNS;
 
@@ -125,10 +126,9 @@ pub trait Anemoi<'a, F: Field> {
 
     /// Linear layer.
     #[inline(always)]
-    fn mds_layer(state: &mut [F; Self::WIDTH])
-    where
-        [(); Self::NUM_COLUMNS]:,
-    {
+    fn mds_layer(state: &mut [F]) {
+        debug_assert!(state.len() == Self::WIDTH);
+
         // Anemoi MDS matrices for small instances have been chosen
         // to support cheap matrix-vector product.
 
@@ -186,8 +186,8 @@ pub trait Anemoi<'a, F: Field> {
                 state[3] += state[7];
             }
             5 => {
-                let x: [F; Self::NUM_COLUMNS] = state[..Self::NUM_COLUMNS].try_into().unwrap();
-                let mut y: [F; Self::NUM_COLUMNS] = state[Self::NUM_COLUMNS..].try_into().unwrap();
+                let x = state[..Self::NUM_COLUMNS].to_vec();
+                let mut y = state[Self::NUM_COLUMNS..].to_vec();
                 y.rotate_left(1);
 
                 let sum_coeffs = x[0] + x[1] + x[2] + x[3] + x[4];
@@ -218,8 +218,8 @@ pub trait Anemoi<'a, F: Field> {
                 state[4] += state[9];
             }
             6 => {
-                let x: [F; Self::NUM_COLUMNS] = state[..Self::NUM_COLUMNS].try_into().unwrap();
-                let mut y: [F; Self::NUM_COLUMNS] = state[Self::NUM_COLUMNS..].try_into().unwrap();
+                let x = state[..Self::NUM_COLUMNS].to_vec();
+                let mut y = state[Self::NUM_COLUMNS..].to_vec();
                 y.rotate_left(1);
 
                 let sum_coeffs = x[0] + x[1] + x[2] + x[3] + x[4] + x[5];
@@ -268,7 +268,7 @@ pub trait Anemoi<'a, F: Field> {
             _ => {
                 let mds = Self::MDS.expect("NO MDS matrix specified for this instance.");
                 // Default to naive matrix-vector multiplication
-                let mut result = [F::zero(); Self::WIDTH];
+                let mut result = vec![F::zero(); Self::WIDTH];
                 for (index, r) in result.iter_mut().enumerate().take(Self::NUM_COLUMNS) {
                     for j in 0..Self::NUM_COLUMNS {
                         *r += mds[index * Self::NUM_COLUMNS + j] * state[j];
@@ -284,8 +284,10 @@ pub trait Anemoi<'a, F: Field> {
 
                 // PHT layer
                 for i in 0..Self::NUM_COLUMNS {
-                    result[Self::NUM_COLUMNS + i] += result[i];
-                    result[i] += result[Self::NUM_COLUMNS + i];
+                    state[Self::NUM_COLUMNS + i] = result[i] + result[Self::NUM_COLUMNS + i];
+                }
+                for i in 0..Self::NUM_COLUMNS {
+                    state[i] = result[i] + state[Self::NUM_COLUMNS + i];
                 }
             }
         }
@@ -293,10 +295,9 @@ pub trait Anemoi<'a, F: Field> {
 
     /// Utility method for the mds_layer.
     #[inline(always)]
-    fn mds_internal(state: &mut [F])
-    where
-        [(); Self::NUM_COLUMNS]:,
-    {
+    fn mds_internal(state: &mut [F]) {
+        debug_assert!(state.len() == Self::WIDTH);
+
         match Self::NUM_COLUMNS {
             3 => {
                 let tmp = state[0] + Self::mul_by_generator(&state[2]);
@@ -324,19 +325,18 @@ pub trait Anemoi<'a, F: Field> {
     /// The S-Box layer.
     #[inline(always)]
     #[unroll_for_loops]
-    fn sbox_layer(state: &mut [F; Self::WIDTH])
-    where
-        [(); Self::NUM_COLUMNS]:,
-    {
-        let mut x: [F; Self::NUM_COLUMNS] = state[..Self::NUM_COLUMNS].try_into().unwrap();
-        let mut y: [F; Self::NUM_COLUMNS] = state[Self::NUM_COLUMNS..].try_into().unwrap();
+    fn sbox_layer(state: &mut [F]) {
+        debug_assert!(state.len() == Self::WIDTH);
+
+        let mut x = state[..Self::NUM_COLUMNS].to_vec();
+        let mut y = state[Self::NUM_COLUMNS..].to_vec();
 
         x.iter_mut().enumerate().for_each(|(i, t)| {
             let y2 = y[i].square();
             *t -= Self::mul_by_generator(&y2);
         });
 
-        let mut x_alpha_inv = x;
+        let mut x_alpha_inv = x.clone();
         x_alpha_inv
             .iter_mut()
             .for_each(|t| *t = Self::exp_by_inv_alpha(*t));
@@ -345,30 +345,31 @@ pub trait Anemoi<'a, F: Field> {
             .enumerate()
             .for_each(|(i, t)| *t -= x_alpha_inv[i]);
 
-        x.iter_mut().enumerate().for_each(|(i, t)| {
-            let y2 = y[i].square();
-            *t += Self::mul_by_generator(&y2) + Self::DELTA;
-        });
+        state
+            .iter_mut()
+            .enumerate()
+            .take(Self::NUM_COLUMNS)
+            .for_each(|(i, t)| {
+                let y2 = y[i].square();
+                *t = x[i] + Self::mul_by_generator(&y2) + Self::DELTA;
+            });
 
-        state[..Self::NUM_COLUMNS].copy_from_slice(&x);
         state[Self::NUM_COLUMNS..].copy_from_slice(&y);
     }
 
     /// A full round of a permutation for this Anemoi instance.
-    fn round(state: &mut [F; Self::WIDTH], round_ctr: usize)
-    where
-        [(); Self::NUM_COLUMNS]:,
-    {
+    fn round(state: &mut [F], round_ctr: usize) {
+        debug_assert!(state.len() == Self::WIDTH);
+
         Self::ark_layer(state, round_ctr);
         Self::mds_layer(state);
         Self::sbox_layer(state);
     }
 
     /// An entire permutation for this Anemoi instance.
-    fn permutation(state: &mut [F; Self::WIDTH])
-    where
-        [(); Self::NUM_COLUMNS]:,
-    {
+    fn permutation(state: &mut [F]) {
+        debug_assert!(state.len() == Self::WIDTH);
+
         for i in 0..Self::NUM_ROUNDS {
             Self::round(state, i);
         }

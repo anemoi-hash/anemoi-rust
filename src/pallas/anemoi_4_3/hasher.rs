@@ -147,7 +147,7 @@ impl Jive<Felt> for AnemoiPallas_4_3 {
     fn compress(elems: &[Felt]) -> Vec<Felt> {
         assert!(elems.len() == STATE_WIDTH);
 
-        let mut state = elems.try_into().unwrap();
+        let mut state = elems.to_vec();
         AnemoiPallas_4_3::permutation(&mut state);
 
         let mut result = [Felt::zero(); NUM_COLUMNS];
@@ -163,7 +163,7 @@ impl Jive<Felt> for AnemoiPallas_4_3 {
         assert!(STATE_WIDTH % k == 0);
         assert!(k % 2 == 0);
 
-        let mut state = elems.try_into().unwrap();
+        let mut state = elems.to_vec();
         AnemoiPallas_4_3::permutation(&mut state);
 
         let mut result = vec![Felt::zero(); STATE_WIDTH / k];

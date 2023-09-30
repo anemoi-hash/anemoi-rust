@@ -96,7 +96,7 @@ impl Jive<Felt> for AnemoiBls12_377_2_1 {
     fn compress(elems: &[Felt]) -> Vec<Felt> {
         assert!(elems.len() == STATE_WIDTH);
 
-        let mut state = elems.try_into().unwrap();
+        let mut state = elems.to_vec();
         AnemoiBls12_377_2_1::permutation(&mut state);
 
         vec![state[0] + state[1] + elems[0] + elems[1]]
