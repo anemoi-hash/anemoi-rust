@@ -5,12 +5,14 @@
 //! All hash instantiations are defined using a `Sponge` trait and can both
 //! process sequences of bytes or native field elements.
 
+#![allow(incomplete_features)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(rustdoc::broken_intra_doc_links)]
 #![deny(missing_debug_implementations)]
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![allow(non_camel_case_types)]
 
 #[cfg(not(feature = "std"))]
 #[macro_use]

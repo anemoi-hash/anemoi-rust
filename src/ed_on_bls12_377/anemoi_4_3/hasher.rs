@@ -4,22 +4,15 @@
 use alloc::vec::Vec;
 
 use super::digest::AnemoiDigest;
-use super::{apply_permutation, DIGEST_SIZE, NUM_COLUMNS, RATE_WIDTH, STATE_WIDTH};
-use super::{Jive, Sponge};
+use super::{AnemoiEdOnBls12_377_4_3, Jive, Sponge};
+use super::{DIGEST_SIZE, NUM_COLUMNS, RATE_WIDTH, STATE_WIDTH};
+use crate::traits::Anemoi;
+use ark_ff::PrimeField;
 
 use super::Felt;
 use super::{One, Zero};
 
-use ark_ff::FromBytes;
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-/// An Anemoi hash instantiation
-pub struct AnemoiHash {
-    state: [Felt; STATE_WIDTH],
-    idx: usize,
-}
-
-impl Sponge<Felt> for AnemoiHash {
+impl Sponge<Felt> for AnemoiEdOnBls12_377_4_3 {
     type Digest = AnemoiDigest;
 
     fn hash(bytes: &[u8]) -> Self::Digest {
@@ -68,10 +61,10 @@ impl Sponge<Felt> for AnemoiHash {
             // Convert the bytes into a field element and absorb it into the rate portion of the
             // state. An Anemoi permutation is applied to the internal state if all the the rate
             // registers have been filled with additional values. We then reset the insertion index.
-            state[i] += Felt::read(&buf[..]).unwrap();
+            state[i] += Felt::from_le_bytes_mod_order(&buf[..]);
             i += 1;
             if i % RATE_WIDTH == 0 {
-                apply_permutation(&mut state);
+                AnemoiEdOnBls12_377_4_3::permutation(&mut state);
                 i = 0;
                 num_hashed += RATE_WIDTH;
             }
@@ -87,7 +80,7 @@ impl Sponge<Felt> for AnemoiHash {
         // to the whole state.
         if sigma.is_zero() {
             state[i] += Felt::one();
-            apply_permutation(&mut state);
+            AnemoiEdOnBls12_377_4_3::permutation(&mut state);
         }
 
         // Squeezing phase
@@ -111,7 +104,7 @@ impl Sponge<Felt> for AnemoiHash {
             state[i] += element;
             i += 1;
             if i % RATE_WIDTH == 0 {
-                apply_permutation(&mut state);
+                AnemoiEdOnBls12_377_4_3::permutation(&mut state);
                 i = 0;
             }
         }
@@ -126,7 +119,7 @@ impl Sponge<Felt> for AnemoiHash {
         // to the whole state.
         if sigma.is_zero() {
             state[i] += Felt::one();
-            apply_permutation(&mut state);
+            AnemoiEdOnBls12_377_4_3::permutation(&mut state);
         }
 
         // Squeezing phase
@@ -144,18 +137,18 @@ impl Sponge<Felt> for AnemoiHash {
         state[DIGEST_SIZE..2 * DIGEST_SIZE].copy_from_slice(digests[0].as_elements());
 
         // Apply internal Anemoi permutation
-        apply_permutation(&mut state);
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         Self::Digest::new(state[..DIGEST_SIZE].try_into().unwrap())
     }
 }
 
-impl Jive<Felt> for AnemoiHash {
+impl Jive<Felt> for AnemoiEdOnBls12_377_4_3 {
     fn compress(elems: &[Felt]) -> Vec<Felt> {
         assert!(elems.len() == STATE_WIDTH);
 
-        let mut state = elems.try_into().unwrap();
-        apply_permutation(&mut state);
+        let mut state = elems.to_vec();
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         let mut result = [Felt::zero(); NUM_COLUMNS];
         for (i, r) in result.iter_mut().enumerate() {
@@ -170,8 +163,8 @@ impl Jive<Felt> for AnemoiHash {
         assert!(STATE_WIDTH % k == 0);
         assert!(k % 2 == 0);
 
-        let mut state = elems.try_into().unwrap();
-        apply_permutation(&mut state);
+        let mut state = elems.to_vec();
+        AnemoiEdOnBls12_377_4_3::permutation(&mut state);
 
         let mut result = vec![Felt::zero(); STATE_WIDTH / k];
         let c = result.len();
@@ -190,9 +183,9 @@ mod tests {
     #[cfg(not(feature = "std"))]
     use alloc::vec;
 
-    use super::super::BigInteger256;
+    use super::super::MontFp;
     use super::*;
-    use ark_ff::to_bytes;
+    use ark_ff::BigInteger;
 
     #[test]
     fn test_anemoi_hash() {
@@ -202,210 +195,120 @@ mod tests {
             vec![Felt::one(), Felt::one(), Felt::one(), Felt::one()],
             vec![Felt::zero(), Felt::zero(), Felt::one(), Felt::one()],
             vec![Felt::one(), Felt::one(), Felt::zero(), Felt::zero()],
-            vec![Felt::new(BigInteger256([
-                0xe2b879eac8a4fa2b,
-                0xd688dac0a1ee3afa,
-                0x98c62e76ba6550ab,
-                0x0dcfb25d3bd51da5,
-            ]))],
+            vec![MontFp!(
+                "3245888732545938703293848064370856564777841805765396792997613448749116772753"
+            )],
             vec![
-                Felt::new(BigInteger256([
-                    0xc09fbfe566e3b57c,
-                    0x7593e3d7da2471fd,
-                    0x7a7bc47491155fba,
-                    0x055aff2ad9ef1470,
-                ])),
-                Felt::new(BigInteger256([
-                    0xe624961f6975054a,
-                    0x9a9e40e1a6c1ac38,
-                    0x72fd09dc0e698f7f,
-                    0x0712f3534d8d388e,
-                ])),
+                MontFp!(
+                    "7663394338249865628842769414268966392219678610153970312684440283159581613217"
+                ),
+                MontFp!(
+                    "6271904162410896908729341222426710964855145842094919193581967140936933284923"
+                ),
             ],
             vec![
-                Felt::new(BigInteger256([
-                    0x23f141f484c57755,
-                    0xcef3b72d66d13713,
-                    0xf5b2b8ee6e02d3b8,
-                    0x05086ff2ded34b44,
-                ])),
-                Felt::new(BigInteger256([
-                    0xeb7c1a05d7963336,
-                    0xf016bce4dc662ce8,
-                    0xbfc67102ef8f3d76,
-                    0x0754f99757b56d3e,
-                ])),
-                Felt::new(BigInteger256([
-                    0x76eaa553502717ef,
-                    0x2a2544ccb77552e1,
-                    0xf789ed899d87899c,
-                    0x069982cb562f376e,
-                ])),
+                MontFp!(
+                    "7969334835959175341708732577328788201615587299246107167659857871324493208835"
+                ),
+                MontFp!(
+                    "7493961423969253751307419581028383478098016292045659784917713206986998549296"
+                ),
+                MontFp!(
+                    "4026170068082212382064346783732235106988068470245368593324116477525361418264"
+                ),
             ],
             vec![
-                Felt::new(BigInteger256([
-                    0x1452a594257ab066,
-                    0x68f0abd4b5f70cff,
-                    0x27900d67bfed6719,
-                    0x11e0bf02d0fa0c8e,
-                ])),
-                Felt::new(BigInteger256([
-                    0x57a111724d60d518,
-                    0x876cb010adf0f821,
-                    0xead43bccfd75c00a,
-                    0x096ca91022aea233,
-                ])),
-                Felt::new(BigInteger256([
-                    0x030816b723fbd622,
-                    0x48f2cae48760762d,
-                    0xf185d709dce3cd4e,
-                    0x03d1624752077f89,
-                ])),
-                Felt::new(BigInteger256([
-                    0x9d881e5f1bde68be,
-                    0xf086f44daeac562a,
-                    0xdb0ead75576f300e,
-                    0x021149ebb8fc9747,
-                ])),
+                MontFp!(
+                    "2666117871319292549109278078687092690881141726197129135322956865265002280242"
+                ),
+                MontFp!(
+                    "6509697908608382218025477966055018129401065002540626665823304793770577635119"
+                ),
+                MontFp!(
+                    "1271169338579653709528628099295006826522129092665839774514071738347273016900"
+                ),
+                MontFp!(
+                    "6227043312022748939281805745739526186202679329496983601547709929059252900150"
+                ),
             ],
             vec![
-                Felt::new(BigInteger256([
-                    0xaf9be7a490845e01,
-                    0xdd2da42461f53aa7,
-                    0xc11a255825345253,
-                    0x03c7d4f62f419345,
-                ])),
-                Felt::new(BigInteger256([
-                    0x56e91b7144a3a07f,
-                    0x9ad7ccbebc0c5d13,
-                    0x13bef88fbd8d9e74,
-                    0x05a94469b97e7f28,
-                ])),
-                Felt::new(BigInteger256([
-                    0x17d9eef59e0acfed,
-                    0xfc61419369137c85,
-                    0x7c42eb143d5dcef0,
-                    0x06f67ead7c6ed6b2,
-                ])),
-                Felt::new(BigInteger256([
-                    0xe61e1a94753b0b09,
-                    0x712f081ab3c92e95,
-                    0x803d6c64c414a62d,
-                    0x0e5b7ff74ae099c6,
-                ])),
-                Felt::new(BigInteger256([
-                    0x0397f8fbf53e7c25,
-                    0xbd2556282f36b004,
-                    0xed97bbcdb16e1641,
-                    0x0fd9020129597645,
-                ])),
+                MontFp!(
+                    "2909735215509804401941047549197284613681174544937466475970835246477891033436"
+                ),
+                MontFp!(
+                    "5599520051368633913843848108157638779058707144916128517158704913308108424747"
+                ),
+                MontFp!(
+                    "3432680043190079867020927346206445943703719322355884967763212834677264837833"
+                ),
+                MontFp!(
+                    "947456959501802677678449235943191631201751906080558756492421326409270025507"
+                ),
+                MontFp!(
+                    "770101993108319020437386465470482367547039566195436746871113992043063945007"
+                ),
             ],
             vec![
-                Felt::new(BigInteger256([
-                    0x7a16d8c94831ee07,
-                    0x086a865f705d8385,
-                    0x23447fbd736cff16,
-                    0x003df863618e0f4b,
-                ])),
-                Felt::new(BigInteger256([
-                    0x1a58ec27590908d0,
-                    0x88288c229fa3f43b,
-                    0x947abf09c6da9fc6,
-                    0x0382aa464a29b16f,
-                ])),
-                Felt::new(BigInteger256([
-                    0x03e2b2f2fcbb0a57,
-                    0x637426de8600a67b,
-                    0xbbdea6c32d7ad87f,
-                    0x11258ba44487ca93,
-                ])),
-                Felt::new(BigInteger256([
-                    0x61f15767be42763d,
-                    0xcd7f8136388a54ab,
-                    0xf43d605382eb924c,
-                    0x0093a5c1a6e45533,
-                ])),
-                Felt::new(BigInteger256([
-                    0xe687218bcc700420,
-                    0xe98cdb1fa1a7061d,
-                    0x36cb16fde5eadff5,
-                    0x0fd10b0e1c2660f8,
-                ])),
-                Felt::new(BigInteger256([
-                    0x4a330a826ac47852,
-                    0x3a8b19440a51917d,
-                    0x9ad02e7133e8e382,
-                    0x04572f920eca0378,
-                ])),
+                MontFp!(
+                    "2080443911568684752411149575349419122512153854110376483525925460103994871352"
+                ),
+                MontFp!(
+                    "6201195192392064815455731467660762987281772282324903591758021941563073326726"
+                ),
+                MontFp!(
+                    "5816509240437701961737463357848466910945009150646501054530732013884280407532"
+                ),
+                MontFp!(
+                    "364898586858423812020984816241377942240805600237616206986914820203073961940"
+                ),
+                MontFp!(
+                    "7545609520856506738146634501223899964449171533615289497205422583748185923883"
+                ),
+                MontFp!(
+                    "3267788309670351784476251074531266658544590980628771747836642182398089645088"
+                ),
             ],
         ];
 
         let output_data = [
-            [Felt::new(BigInteger256([
-                0x2617ff8213eb6bd2,
-                0x02dae5c01fcfda1c,
-                0x97cefcfe09f198d3,
-                0x05c36a7b54c0afec,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x004fb9370593c267,
-                0x34022d2a9023898b,
-                0x4024ed2e2331e301,
-                0x0dbf3aeffdbfe708,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x8f43eea0087ae93d,
-                0x928d9a343f4ef9ba,
-                0xd3f7e4329099719f,
-                0x0a0eb82c98c08931,
-            ]))],
-            [Felt::new(BigInteger256([
-                0xb10276ec6a3c5976,
-                0x95af3656b32980b7,
-                0x66b04ec6ec427c5f,
-                0x0118919d08a208b2,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x771cb62c724d4b5f,
-                0x27d9059d05a21fc1,
-                0x8200df25574e1b2c,
-                0x0cdd5bb537d41cbb,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x92a83e545291477a,
-                0x6a7159e6664e1533,
-                0xaada644bc25b2654,
-                0x002074f50da0b0ce,
-            ]))],
-            [Felt::new(BigInteger256([
-                0xf28a4998a77845cc,
-                0x15d6753d77d817d6,
-                0xb790508409c2637e,
-                0x05d87e9568d98885,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x0d80efd864558cd4,
-                0xc2c6a34e8cb5eced,
-                0x8389b3d6af00cc9a,
-                0x1211a2ae1fbd8cba,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x72f218ef8967c8e5,
-                0xc99e817aa168dc49,
-                0xd9421d13c96bac9d,
-                0x074224acc2aa322a,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x36755a5327d6d7db,
-                0xd5bfd7899f4ddb34,
-                0x091883990e4ccfbc,
-                0x085c5e70b78df05e,
-            ]))],
+            [MontFp!(
+                "2826852558969682283160965063399396013408991576304937928545694637519109987876"
+            )],
+            [MontFp!(
+                "715813639245542616319007380674059374635588794208688983677833596359619725647"
+            )],
+            [MontFp!(
+                "876091172931230864992957830321534820967228680519015826743030886193379751284"
+            )],
+            [MontFp!(
+                "7832641788849582971659980460374408607868841084869548467467350585852449552347"
+            )],
+            [MontFp!(
+                "1769025083902686531720248316128771525661472288104261222432854562461627706893"
+            )],
+            [MontFp!(
+                "3508965325475653084247845767237725060146495017552397552195176578350789058908"
+            )],
+            [MontFp!(
+                "1878818611437899959920600011342139010838536479547266920323586032506688840792"
+            )],
+            [MontFp!(
+                "7419422835010040190368651561187392128505524499673594534865952878287607357198"
+            )],
+            [MontFp!(
+                "3056644334375883027446266166030682099237729268530996862502216213378803940298"
+            )],
+            [MontFp!(
+                "618929239659418549046582686223990802620595245882301785085280228605376233832"
+            )],
         ];
 
         for (index, (input, expected)) in input_data.iter().zip(output_data).enumerate() {
             println!("{:?}", index);
-            assert_eq!(expected, AnemoiHash::hash_field(input).to_elements());
+            assert_eq!(
+                expected,
+                AnemoiEdOnBls12_377_4_3::hash_field(input).to_elements()
+            );
         }
     }
 
@@ -420,30 +323,18 @@ mod tests {
         ];
 
         let output_data = [
-            [Felt::new(BigInteger256([
-                0x2617ff8213eb6bd2,
-                0x02dae5c01fcfda1c,
-                0x97cefcfe09f198d3,
-                0x05c36a7b54c0afec,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x004fb9370593c267,
-                0x34022d2a9023898b,
-                0x4024ed2e2331e301,
-                0x0dbf3aeffdbfe708,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x8f43eea0087ae93d,
-                0x928d9a343f4ef9ba,
-                0xd3f7e4329099719f,
-                0x0a0eb82c98c08931,
-            ]))],
-            [Felt::new(BigInteger256([
-                0xb10276ec6a3c5976,
-                0x95af3656b32980b7,
-                0x66b04ec6ec427c5f,
-                0x0118919d08a208b2,
-            ]))],
+            [MontFp!(
+                "2826852558969682283160965063399396013408991576304937928545694637519109987876"
+            )],
+            [MontFp!(
+                "715813639245542616319007380674059374635588794208688983677833596359619725647"
+            )],
+            [MontFp!(
+                "876091172931230864992957830321534820967228680519015826743030886193379751284"
+            )],
+            [MontFp!(
+                "7832641788849582971659980460374408607868841084869548467467350585852449552347"
+            )],
         ];
 
         // The inputs can all be represented with at least 1 byte less than the field size,
@@ -451,11 +342,14 @@ mod tests {
         // result as treating the inputs as field elements.
         for (input, expected) in input_data.iter().zip(output_data) {
             let mut bytes = [0u8; 124];
-            bytes[0..31].copy_from_slice(&to_bytes!(input[0]).unwrap()[0..31]);
-            bytes[31..62].copy_from_slice(&to_bytes!(input[1]).unwrap()[0..31]);
-            bytes[62..93].copy_from_slice(&to_bytes!(input[2]).unwrap()[0..31]);
-            bytes[93..124].copy_from_slice(&to_bytes!(input[3]).unwrap()[0..31]);
-            assert_eq!(expected, AnemoiHash::hash(&bytes).to_elements());
+            bytes[0..31].copy_from_slice(&input[0].into_bigint().to_bytes_le()[0..31]);
+            bytes[31..62].copy_from_slice(&input[1].into_bigint().to_bytes_le()[0..31]);
+            bytes[62..93].copy_from_slice(&input[2].into_bigint().to_bytes_le()[0..31]);
+            bytes[93..124].copy_from_slice(&input[3].into_bigint().to_bytes_le()[0..31]);
+            assert_eq!(
+                expected,
+                AnemoiEdOnBls12_377_4_3::hash(&bytes).to_elements()
+            );
         }
     }
 
@@ -471,69 +365,48 @@ mod tests {
 
         let output_data = [
             [
-                Felt::new(BigInteger256([
-                    0x137fb2096b6372fc,
-                    0x993312bcb39674f3,
-                    0x0ee2c095c075446e,
-                    0x07bcb037d09845d8,
-                ])),
-                Felt::new(BigInteger256([
-                    0x9c94353b8cf22b89,
-                    0xedca14f946bd9ae1,
-                    0xe918e80a6cb5548c,
-                    0x0a658aa3f63b81a1,
-                ])),
+                MontFp!(
+                    "4166825787354029787334922406033290250172572810107272783449272467370104361499"
+                ),
+                MontFp!(
+                    "443119219083466133166448152339477273242820198154691037927464243515191538965"
+                ),
             ],
             [
-                Felt::new(BigInteger256([
-                    0x5d672ce69e30a2c7,
-                    0xa0c96ddc675f8ccf,
-                    0xb0e30b8e3ab3a2d1,
-                    0x0efd6b5cbfad6f33,
-                ])),
-                Felt::new(BigInteger256([
-                    0x7139e5927f5d485b,
-                    0xbcc379ea4ebd513a,
-                    0x08f4f21a365bdd85,
-                    0x117e4efb37d6c61c,
-                ])),
+                MontFp!(
+                    "546351612581094746909612373291868483487237596382940402109210862670055071860"
+                ),
+                MontFp!(
+                    "4683692898576499548827723194744461803813133049085680138685198838036731652343"
+                ),
             ],
             [
-                Felt::new(BigInteger256([
-                    0x9ba2832ea60c63e5,
-                    0xc618da490250d3c6,
-                    0xbb1d5f3c3f801348,
-                    0x00cf318fca099907,
-                ])),
-                Felt::new(BigInteger256([
-                    0x15ced790b9fb251d,
-                    0x735c35bffde94d19,
-                    0xf5f7bc2bb6a0b785,
-                    0x10833ad21b37f94c,
-                ])),
+                MontFp!(
+                    "3239548400000290705362327910139849710833184455393184789726734156259593056824"
+                ),
+                MontFp!(
+                    "429426852404684922799838349190498511339808948377701253268888394251603161550"
+                ),
             ],
             [
-                Felt::new(BigInteger256([
-                    0x7dfd898d7d0d71f4,
-                    0xa052d5dbd5ab9d86,
-                    0xc7138911383ee30c,
-                    0x0280ecb99159af2e,
-                ])),
-                Felt::new(BigInteger256([
-                    0xf58c8da2e78ed2b4,
-                    0x9cfa2a78fd84181d,
-                    0xc268625a37bff577,
-                    0x059ad657e2fc355f,
-                ])),
+                MontFp!(
+                    "2040858442524663883803034136807049307596283283862686075056479988745491268025"
+                ),
+                MontFp!(
+                    "8233028930313417211499327277472739989778672106814084714224282121099996419938"
+                ),
             ],
         ];
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress(input));
+            assert_eq!(expected.to_vec(), AnemoiEdOnBls12_377_4_3::compress(input));
         }
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 2));
+            assert_eq!(
+                expected.to_vec(),
+                AnemoiEdOnBls12_377_4_3::compress_k(input, 2)
+            );
         }
 
         let input_data = [
@@ -544,34 +417,25 @@ mod tests {
         ];
 
         let output_data = [
-            [Felt::new(BigInteger256([
-                0xb013e744f8559e85,
-                0x86fd27b5fa540fd4,
-                0xf7fba8a02d2a98fb,
-                0x12223adbc6d3c779,
-            ]))],
-            [Felt::new(BigInteger256([
-                0xc48f92791d8deb21,
-                0x03e270c7e61cde08,
-                0x5923b08a14d7d056,
-                0x0dd054f95d578ff9,
-            ]))],
-            [Felt::new(BigInteger256([
-                0xb1715abf60078902,
-                0x39751009003a20df,
-                0xb1151b67f620cace,
-                0x11526c61e5419254,
-            ]))],
-            [Felt::new(BigInteger256([
-                0x738a1730649c44a8,
-                0x3d4d0054d32fb5a4,
-                0x897beb6b6ffed884,
-                0x081bc3117455e48e,
-            ]))],
+            [MontFp!(
+                "4609945006437495920501370558372767523415393008261963821376736710885295900464"
+            )],
+            [MontFp!(
+                "5230044511157594295737335568036330287300370645468620540794409700706786724203"
+            )],
+            [MontFp!(
+                "3668975252404975628162166259330348222172993403770886042995622550511196218374"
+            )],
+            [MontFp!(
+                "1829425623409710671053536475498242765999056055522706961345528653928078448922"
+            )],
         ];
 
         for (input, expected) in input_data.iter().zip(output_data) {
-            assert_eq!(expected.to_vec(), AnemoiHash::compress_k(input, 4));
+            assert_eq!(
+                expected.to_vec(),
+                AnemoiEdOnBls12_377_4_3::compress_k(input, 4)
+            );
         }
     }
 }

@@ -12,20 +12,20 @@ keywords = ["cryptography", "hash", "hash-function", "anemoi", "sponge", "compre
 categories = ["cryptography"]
 
 [dependencies]
-ark-ff = { version="^0.3.0", default-features = false }
-ark-bls12-377 = { version="^0.3.0", default-features = false, optional = true }
-ark-bls12-381 = { version="^0.3.0", default-features = false, optional = true }
-ark-bn254 = { version="^0.3.0", default-features = false, optional = true }
-ark-ec = { version="^0.3.0", default-features = false }
-ark-pallas = { version="^0.3.0", default-features = false, optional = true }
-ark-std = { version="^0.3.0", default-features = false }
+ark-ff = { version="^0.4.0", default-features = false }
+ark-bls12-377 = { version="^0.4.0", default-features = false, optional = true }
+ark-bls12-381 = { version="^0.4.0", default-features = false, optional = true }
+ark-bn254 = { version="^0.4.0", default-features = false, optional = true }
+ark-ec = { version="^0.4.0", default-features = false }
+ark-pallas = { version="^0.4.0", default-features = false, optional = true }
+ark-serialize = { version="^0.4.0", default-features = false }
+ark-std = { version="^0.4.0", default-features = false }
 getrandom = { version = "0.2", default-features = false, features = ["js"] }
 rand_core = { version = "0.6.2", default-features = false, features = ["getrandom"] }
 unroll = { version = "0.1.5" }
 
 [dev-dependencies]
-ark-serialize = { version="^0.3.0" }
-ark-algebra-test-templates = { version="^0.3.0" }
+ark-algebra-test-templates = { version="^0.4.0" }
 criterion = "0.3"
 
 [features]

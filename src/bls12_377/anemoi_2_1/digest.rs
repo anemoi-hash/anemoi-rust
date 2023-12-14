@@ -6,7 +6,7 @@ use alloc::vec::Vec;
 use super::DIGEST_SIZE;
 
 use super::Felt;
-use ark_ff::to_bytes;
+use ark_serialize::CanonicalSerialize;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 /// An Anemoi Digest for the Anemoi Hash over Felt
@@ -40,7 +40,9 @@ impl AnemoiDigest {
 
     /// Returns an array of bytes corresponding to the digest
     pub fn to_bytes(&self) -> [u8; 48] {
-        to_bytes![self.0[0]].unwrap()[..48].try_into().unwrap()
+        let mut bytes = [0u8; 48];
+        self.0[0].serialize_compressed(&mut bytes[..]).unwrap();
+        bytes
     }
 }
 

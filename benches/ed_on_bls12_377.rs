@@ -14,7 +14,7 @@ fn criterion_benchmark(c: &mut Criterion) {
         |bench| {
             let v = [Felt::one(); anemoi_2_1::STATE_WIDTH];
 
-            bench.iter(|| anemoi_2_1::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_2_1::AnemoiEdOnBls12_377_2_1::compress(black_box(&v)))
         },
     );
 
@@ -23,7 +23,7 @@ fn criterion_benchmark(c: &mut Criterion) {
         |bench| {
             let v = [Felt::one(); anemoi_4_3::STATE_WIDTH];
 
-            bench.iter(|| anemoi_4_3::AnemoiHash::compress(black_box(&v)))
+            bench.iter(|| anemoi_4_3::AnemoiEdOnBls12_377_4_3::compress(black_box(&v)))
         },
     );
 
@@ -32,7 +32,7 @@ fn criterion_benchmark(c: &mut Criterion) {
         |bench| {
             let v = [Felt::one(); anemoi_4_3::STATE_WIDTH];
 
-            bench.iter(|| anemoi_4_3::AnemoiHash::compress_k(black_box(&v), 4))
+            bench.iter(|| anemoi_4_3::AnemoiEdOnBls12_377_4_3::compress_k(black_box(&v), 4))
         },
     );
 
@@ -43,7 +43,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_2_1::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_2_1::AnemoiEdOnBls12_377_2_1::hash(black_box(&data)))
         },
     );
 
@@ -54,7 +54,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let mut rng = OsRng;
             rng.fill_bytes(&mut data);
 
-            bench.iter(|| anemoi_4_3::AnemoiHash::hash(black_box(&data)))
+            bench.iter(|| anemoi_4_3::AnemoiEdOnBls12_377_4_3::hash(black_box(&data)))
         },
     );
 }
